@@ -1,9 +1,14 @@
-<div class="conteneur">
-  <div class="entete">
-    <h1>Salles</h1>
-
+<div class="page">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Gestion des salles</p>
+      <h1>Salles</h1>
+    </div>
     @if (authService.aLeRole('ADMINISTRATEUR')) {
-      <a routerLink="/salles/creer" class="bouton-lien">+ Créer une salle</a>
+      <a routerLink="/salles/creer" class="bouton-principal">
+        <i class="pi pi-plus"></i>
+        Créer une salle
+      </a>
     }
   </div>
 
@@ -11,39 +16,48 @@
     <p class="message-erreur">{{ erreur() }}</p>
   }
 
-  <p-table [value]="salles()" [loading]="chargement()" styleClass="p-datatable-sm" [rowHover]="true">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Nom</th>
-        <th>Capacité</th>
-        <th>Localisation</th>
-        <th>Statut</th>
-        @if (authService.aLeRole('ADMINISTRATEUR')) {
-          <th></th>
-        }
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-salle>
-      <tr>
-        <td>{{ salle.nom }}</td>
-        <td>{{ salle.capacite }}</td>
-        <td>{{ salle.localisation || '-' }}</td>
-        <td>
-          <p-tag [value]="salle.actif ? 'ACTIVE' : 'INACTIVE'" [severity]="salle.actif ? 'success' : 'danger'" />
-        </td>
-        @if (authService.aLeRole('ADMINISTRATEUR')) {
+  <div class="carte-tableau">
+    <p-table [value]="salles()" [loading]="chargement()" [rowHover]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nom</th>
+          <th>Capacité</th>
+          <th>Localisation</th>
+          <th>Statut</th>
+          @if (authService.aLeRole('ADMINISTRATEUR')) {
+            <th></th>
+          }
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-salle>
+        <tr>
+          <td class="cellule-titre">{{ salle.nom }}</td>
+          <td>{{ salle.capacite }} places</td>
+          <td>{{ salle.localisation || '—' }}</td>
           <td>
-            <button class="bouton-toggle" (click)="basculerActivation(salle)">
-              {{ salle.actif ? 'Désactiver' : 'Activer' }}
-            </button>
+            <span class="pastille" [ngClass]="salle.actif ? 'pastille-succes' : 'pastille-danger'">
+              {{ salle.actif ? 'Active' : 'Inactive' }}
+            </span>
           </td>
-        }
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="5" class="message-vide">Aucune salle trouvée.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+          @if (authService.aLeRole('ADMINISTRATEUR')) {
+            <td>
+              <button class="bouton-mini" (click)="basculerActivation(salle)">
+                {{ salle.actif ? 'Désactiver' : 'Activer' }}
+              </button>
+            </td>
+          }
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5">
+            <div class="etat-vide">
+              <i class="pi pi-building"></i>
+              <p>Aucune salle enregistrée.</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

@@ -1,110 +1,99 @@
-<div class="conteneur">
-  <h1>Statistiques</h1>
+<div class="page">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Pilotage</p>
+      <h1>Statistiques</h1>
+    </div>
+  </div>
 
   @if (chargement()) {
-    <p>Chargement...</p>
+    <p>Chargement…</p>
   } @else if (erreur()) {
     <p class="message-erreur">{{ erreur() }}</p>
   } @else if (donnees(); as d) {
 
-    <div class="cartes">
-      <div class="carte">
-        <span class="valeur-carte">{{ totalRencontres() }}</span>
-        <span class="libelle-carte">Rencontres au total</span>
+    <div class="grille-indicateurs-kpi">
+      <div class="carte-kpi">
+        <span class="valeur-kpi">{{ totalRencontres() }}</span>
+        <span class="libelle-kpi">Rencontres au total</span>
       </div>
-      <div class="carte">
-        <span class="valeur-carte">{{ d.participantsDistincts }}</span>
-        <span class="libelle-carte">Participants distincts</span>
+      <div class="carte-kpi">
+        <span class="valeur-kpi">{{ d.participantsDistincts }}</span>
+        <span class="libelle-kpi">Participants distincts</span>
       </div>
-      <div class="carte">
-        <span class="valeur-carte">{{ d.tauxPresence.tauxPourcentage }}%</span>
-        <span class="libelle-carte">Taux de présence global</span>
-        <span class="detail-carte">{{ d.tauxPresence.totalPresents }} / {{ d.tauxPresence.totalInscrits }} inscrits</span>
+      <div class="carte-kpi">
+        <span class="valeur-kpi">{{ d.tauxPresence.tauxPourcentage }}%</span>
+        <span class="libelle-kpi">Taux de présence global</span>
+        <span class="detail-kpi">{{ d.tauxPresence.totalPresents }} / {{ d.tauxPresence.totalInscrits }} inscrits</span>
       </div>
     </div>
 
-    <div class="grille-indicateurs">
-      <section class="bloc">
-        <h2>Rencontres par type</h2>
+    <!-- Rangée 1 : tendance, pleine largeur -->
+    <section class="carte bloc-principal">
+      <h2><i class="pi pi-chart-line"></i> Évolution des rencontres par mois</h2>
+      <div class="conteneur-graphique conteneur-tendance">
+        <p-chart type="line" [data]="chartRencontresParMois" [options]="optionsLigne" />
+      </div>
+    </section>
+
+    <!-- Rangée 2 : répartition par statut + occupation des salles -->
+    <div class="grille-deux">
+      <section class="carte">
+        <h2><i class="pi pi-chart-pie"></i> Rencontres par statut</h2>
+        <div class="conteneur-doughnut">
+          <p-chart type="doughnut" [data]="chartRencontresParStatut" [options]="optionsDoughnut" />
+        </div>
+      </section>
+
+      <section class="carte">
+        <h2><i class="pi pi-building"></i> Occupation des salles</h2>
+        <p class="sous-titre-bloc">Mois en cours</p>
+        @if (d.tauxOccupationSalles.length > 0) {
+          <div class="conteneur-graphique">
+            <p-chart type="bar" [data]="chartOccupationSalles" [options]="optionsBarreHorizontale" />
+          </div>
+        } @else {
+          <p class="etiquette-vide">Aucune donnée.</p>
+        }
+      </section>
+    </div>
+
+    <!-- Rangée 3 : indicateurs secondaires, en barres légères -->
+    <div class="grille-trois">
+      <section class="carte bloc-leger">
+        <h3>Rencontres par type</h3>
         @for (item of d.rencontresParType; track item.cle) {
           <div class="ligne-barre">
             <span class="etiquette">{{ item.cle }}</span>
-            <div class="barre-fond">
-              <div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.rencontresParType)"></div>
-            </div>
+            <div class="barre-fond"><div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.rencontresParType)"></div></div>
             <span class="valeur">{{ item.valeur }}</span>
           </div>
         }
       </section>
 
-      <section class="bloc">
-        <h2>Rencontres par statut</h2>
-        @for (item of d.rencontresParStatut; track item.cle) {
-          <div class="ligne-barre">
-            <span class="etiquette">{{ item.cle }}</span>
-            <div class="barre-fond">
-              <div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.rencontresParStatut)"></div>
-            </div>
-            <span class="valeur">{{ item.valeur }}</span>
-          </div>
-        }
-      </section>
-
-      <section class="bloc">
-        <h2>Rencontres par mois</h2>
-        @for (item of d.rencontresParMois; track item.mois) {
-          <div class="ligne-barre">
-            <span class="etiquette">{{ item.mois }}</span>
-            <div class="barre-fond">
-              <div class="barre-remplissage" [style.width.%]="pourcentageBarreMois(item.total, d.rencontresParMois)"></div>
-            </div>
-            <span class="valeur">{{ item.total }}</span>
-          </div>
-        } @empty {
-          <p class="message-vide">Aucune donnée.</p>
-        }
-      </section>
-
-      <section class="bloc">
-        <h2>Occupation des salles (mois en cours)</h2>
-        @for (salle of d.tauxOccupationSalles; track salle.salleId) {
-          <div class="ligne-barre">
-            <span class="etiquette">{{ salle.salleNom }}</span>
-            <div class="barre-fond">
-              <div class="barre-remplissage" [style.width.%]="pourcentageBarreOccupation(salle)"></div>
-            </div>
-            <span class="valeur">{{ salle.tauxOccupationPourcentage }}%</span>
-          </div>
-        }
-      </section>
-
-      <section class="bloc">
-        <h2>Volume de courrier</h2>
+      <section class="carte bloc-leger">
+        <h3>Volume de courrier</h3>
         @for (item of d.volumeCourrierParSens; track item.cle) {
           <div class="ligne-barre">
             <span class="etiquette">{{ item.cle }}</span>
-            <div class="barre-fond">
-              <div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.volumeCourrierParSens)"></div>
-            </div>
+            <div class="barre-fond"><div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.volumeCourrierParSens)"></div></div>
             <span class="valeur">{{ item.valeur }}</span>
           </div>
         } @empty {
-          <p class="message-vide">Aucun courrier enregistré.</p>
+          <p class="etiquette-vide">Aucun courrier enregistré.</p>
         }
       </section>
 
-      <section class="bloc">
-        <h2>Alertes par type</h2>
+      <section class="carte bloc-leger">
+        <h3>Alertes par type</h3>
         @for (item of d.alertesParType; track item.cle) {
           <div class="ligne-barre">
             <span class="etiquette">{{ item.cle }}</span>
-            <div class="barre-fond">
-              <div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.alertesParType)"></div>
-            </div>
+            <div class="barre-fond"><div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.alertesParType)"></div></div>
             <span class="valeur">{{ item.valeur }}</span>
           </div>
         } @empty {
-          <p class="message-vide">Aucune alerte enregistrée.</p>
+          <p class="etiquette-vide">Aucune alerte enregistrée.</p>
         }
       </section>
     </div>

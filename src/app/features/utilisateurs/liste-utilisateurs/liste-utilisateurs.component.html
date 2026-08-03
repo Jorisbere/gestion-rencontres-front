@@ -1,45 +1,61 @@
-<div class="conteneur">
-  <div class="entete">
-    <h1>Utilisateurs</h1>
-    <a routerLink="/utilisateurs/creer" class="bouton-lien">+ Créer un utilisateur</a>
+<div class="page">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Administration</p>
+      <h1>Utilisateurs</h1>
+    </div>
+    <a routerLink="/utilisateurs/creer" class="bouton-principal">
+      <i class="pi pi-plus"></i>
+      Créer un utilisateur
+    </a>
   </div>
 
   @if (erreur()) {
     <p class="message-erreur">{{ erreur() }}</p>
   }
 
-  <p-table [value]="utilisateurs()" [loading]="chargement()" [paginator]="true" [rows]="10"
-           styleClass="p-datatable-sm" [rowHover]="true">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>Email</th>
-        <th>Rôle</th>
-        <th>Statut</th>
-        <th></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-utilisateur>
-      <tr>
-        <td>{{ utilisateur.nom }}</td>
-        <td>{{ utilisateur.prenom }}</td>
-        <td>{{ utilisateur.email }}</td>
-        <td>{{ utilisateur.role }}</td>
-        <td>
-          <p-tag [value]="utilisateur.actif ? 'ACTIF' : 'INACTIF'" [severity]="utilisateur.actif ? 'success' : 'danger'" />
-        </td>
-        <td>
-          <button class="bouton-toggle" (click)="basculerActivation(utilisateur)">
-            {{ utilisateur.actif ? 'Désactiver' : 'Activer' }}
-          </button>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="6" class="message-vide">Aucun utilisateur trouvé.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <div class="carte-tableau">
+    <p-table [value]="utilisateurs()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Email</th>
+          <th>Rôle</th>
+          <th>Statut</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-utilisateur>
+        <tr>
+          <td class="cellule-titre">{{ utilisateur.nom }}</td>
+          <td>{{ utilisateur.prenom }}</td>
+          <td>{{ utilisateur.email }}</td>
+          <td>
+            <span class="pastille pastille-neutre">{{ utilisateur.role }}</span>
+          </td>
+          <td>
+            <span class="pastille" [ngClass]="utilisateur.actif ? 'pastille-succes' : 'pastille-danger'">
+              {{ utilisateur.actif ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+          <td>
+            <button class="bouton-mini" (click)="basculerActivation(utilisateur)">
+              {{ utilisateur.actif ? 'Désactiver' : 'Activer' }}
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6">
+            <div class="etat-vide">
+              <i class="pi pi-shield"></i>
+              <p>Aucun utilisateur enregistré.</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

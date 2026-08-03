@@ -2,7 +2,6 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TagModule } from 'primeng/tag';
 import { RencontreService } from '../../../core/services/rencontre.service';
 import { InscriptionService } from '../../../core/services/inscription.service';
 import { ParticipantService } from '../../../core/services/participant.service';
@@ -51,7 +50,7 @@ const TRANSITION_SUIVANTE_COURRIER: Record<StatutCourrier, StatutCourrier | null
 @Component({
   selector: 'app-detail-rencontre',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, TagModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './detail-rencontre.component.html',
   styleUrl: './detail-rencontre.component.scss'
 })
@@ -157,13 +156,13 @@ export class DetailRencontreComponent implements OnInit {
     });
   }
 
-  severiteStatut(statut: StatutRencontre): 'info' | 'success' | 'warn' | 'danger' | 'secondary' {
+  classeStatut(statut: StatutRencontre): string {
     switch (statut) {
-      case 'PLANIFIEE': return 'info';
-      case 'CONFIRMEE': return 'success';
-      case 'EN_COURS': return 'warn';
-      case 'TERMINEE': return 'secondary';
-      case 'ANNULEE': return 'danger';
+      case 'PLANIFIEE': return 'pastille-info';
+      case 'CONFIRMEE': return 'pastille-succes';
+      case 'EN_COURS': return 'pastille-avert';
+      case 'TERMINEE': return 'pastille-neutre';
+      case 'ANNULEE': return 'pastille-danger';
     }
   }
 
@@ -225,13 +224,13 @@ export class DetailRencontreComponent implements OnInit {
     });
   }
 
-  severitePresence(statut: StatutPresence): 'info' | 'success' | 'warn' | 'danger' | 'secondary' {
+  classePresence(statut: StatutPresence): string {
     switch (statut) {
-      case 'INSCRIT': return 'info';
-      case 'CONFIRME': return 'success';
-      case 'PRESENT': return 'success';
-      case 'ABSENT': return 'warn';
-      case 'ANNULE': return 'danger';
+      case 'INSCRIT': return 'pastille-info';
+      case 'CONFIRME': return 'pastille-succes';
+      case 'PRESENT': return 'pastille-succes';
+      case 'ABSENT': return 'pastille-avert';
+      case 'ANNULE': return 'pastille-danger';
     }
   }
 
@@ -394,12 +393,12 @@ export class DetailRencontreComponent implements OnInit {
     });
   }
 
-  severiteCourrier(statut: StatutCourrier): 'info' | 'success' | 'warn' | 'danger' | 'secondary' {
+  classeCourrier(statut: StatutCourrier): string {
     switch (statut) {
-      case 'RECU': return 'info';
-      case 'EN_TRAITEMENT': return 'warn';
-      case 'TRAITE': return 'success';
-      case 'ARCHIVE': return 'secondary';
+      case 'RECU': return 'pastille-info';
+      case 'EN_TRAITEMENT': return 'pastille-avert';
+      case 'TRAITE': return 'pastille-succes';
+      case 'ARCHIVE': return 'pastille-neutre';
     }
   }
 }

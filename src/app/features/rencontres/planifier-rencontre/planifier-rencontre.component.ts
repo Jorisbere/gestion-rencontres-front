@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RencontreService } from '../../../core/services/rencontre.service';
 import { SalleService } from '../../../core/services/salle.service';
@@ -11,7 +11,7 @@ import { RencontreRequest, TypeRencontre } from '../../../core/models/rencontre.
 @Component({
   selector: 'app-planifier-rencontre',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './planifier-rencontre.component.html',
   styleUrl: './planifier-rencontre.component.scss'
 })

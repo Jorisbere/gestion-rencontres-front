@@ -25,16 +25,371 @@ a {
   color: var(--ocean);
 }
 
-// Focus visible cohérent sur toute l'application (accessibilité clavier)
 :focus-visible {
   outline: 2px solid var(--ocean);
   outline-offset: 2px;
 }
 
-// Réduction de mouvement respectée pour les personnes qui le demandent
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+// ============================================================
+// Kit d'interface partagé — réutilisé par tous les écrans
+// ============================================================
+
+.page {
+  max-width: 1200px;
+}
+
+.page-etroite {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.entete-page {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 24px;
+  }
+}
+
+.eyebrow {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 4px;
+}
+
+.bouton-principal, .bouton-secondaire {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: var(--font-titres);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  i { font-size: 12px; }
+}
+
+.bouton-principal {
+  background-color: var(--ocean);
+  color: #FFFFFF;
+
+  &:hover { background-color: var(--ocean-dark); }
+
+  &:disabled {
+    background-color: var(--mist);
+    color: var(--ink-soft);
+    cursor: not-allowed;
+  }
+}
+
+.bouton-secondaire {
+  background-color: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--mist);
+
+  &:hover { border-color: var(--ocean); color: var(--ocean); }
+}
+
+.barre-filtres {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 7px 16px;
+  border-radius: 20px;
+  background-color: var(--surface);
+  border: 1px solid var(--mist);
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+
+  &:hover { border-color: var(--ocean); color: var(--ocean); }
+
+  &.chip-actif {
+    background-color: var(--navy);
+    border-color: var(--navy);
+    color: #FFFFFF;
+  }
+}
+
+.message-erreur {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background-color: var(--danger-bg);
+  color: var(--danger);
+  font-size: 13.5px;
+  margin-bottom: 16px;
+}
+
+.message-succes {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background-color: var(--success-bg);
+  color: var(--success);
+  font-size: 13.5px;
+  margin-bottom: 16px;
+}
+
+.carte {
+  background-color: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--ombre-carte);
+  padding: 24px;
+}
+
+.carte-tableau {
+  background-color: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--ombre-carte);
+  overflow: hidden;
+}
+
+.cellule-titre {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+// Pastilles de statut
+.pastille {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.pastille-info { background-color: var(--info-bg); color: var(--ocean-dark); }
+  &.pastille-succes { background-color: var(--success-bg); color: var(--success); }
+  &.pastille-avert { background-color: var(--warning-bg); color: #8A6215; }
+  &.pastille-neutre { background-color: var(--neutral-bg); color: var(--ink-soft); }
+  &.pastille-danger { background-color: var(--danger-bg); color: var(--danger); }
+}
+
+.bouton-voir, .lien-discret {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ocean);
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+
+  i { font-size: 10px; transition: transform 0.15s ease; }
+  &:hover i { transform: translateX(2px); }
+}
+
+.bouton-mini {
+  padding: 5px 12px;
+  border: 1px solid var(--mist);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover { border-color: var(--ocean); color: var(--ocean); }
+
+  &.mini-danger:hover { border-color: var(--danger); color: var(--danger); }
+}
+
+.etat-vide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 0;
+  color: var(--ink-soft);
+
+  i { font-size: 28px; color: var(--mist); }
+  p { margin: 0; font-size: 13.5px; }
+}
+
+// Formulaires en carte (connexion, création)
+.formulaire-carte {
+  max-width: 480px;
+
+  .carte {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 14px 0 6px;
+
+    &:first-of-type { margin-top: 0; }
+  }
+
+  input, select, textarea {
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid var(--mist);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: var(--font-corps);
+    background-color: var(--surface);
+    transition: border-color 0.15s ease;
+
+    &:focus { border-color: var(--ocean); }
+  }
+
+  textarea {
+    height: auto;
+    padding: 10px 14px;
+    resize: vertical;
+  }
+
+  .erreur-champ {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--danger);
+  }
+
+  button[type="submit"] {
+    height: 44px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background-color: var(--ocean);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--font-titres);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover:not(:disabled) { background-color: var(--ocean-dark); }
+    &:disabled { background-color: var(--mist); color: var(--ink-soft); cursor: not-allowed; }
+  }
+
+  .actions-formulaire {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 24px;
+
+    button[type="submit"] {
+      flex: 1;
+    }
+  }
+
+  .lien-annuler {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--danger);
+      text-decoration: underline;
+    }
+  }
+}
+
+// Cartes indicateurs (statistiques, tableau de bord)
+.grille-indicateurs-kpi {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.carte-kpi {
+  flex: 1;
+  min-width: 180px;
+  padding: 20px;
+  background-color: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--ombre-carte);
+  display: flex;
+  flex-direction: column;
+
+  .valeur-kpi {
+    font-family: var(--font-titres);
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .libelle-kpi {
+    margin-top: 4px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+
+  .detail-kpi {
+    margin-top: 2px;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    opacity: 0.8;
+  }
+}
+
+// ---------- Recalibrage global du thème PrimeNG ----------
+.p-datatable {
+  font-family: var(--font-corps);
+  font-size: 13px;
+
+  .p-datatable-thead > tr > th {
+    background-color: var(--paper);
+    color: var(--ink-soft);
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 12px 16px;
+    border: none;
+    border-bottom: 1px solid var(--mist);
+  }
+
+  .p-datatable-tbody > tr {
+    > td {
+      padding: 14px 16px;
+      border: none;
+      border-bottom: 1px solid var(--mist);
+      color: var(--ink);
+    }
+
+    &:hover > td { background-color: var(--paper); }
+    &:last-child > td { border-bottom: none; }
+  }
+
+  .p-paginator {
+    border: none;
+    border-top: 1px solid var(--mist);
+    padding: 10px 16px;
+    background-color: var(--surface);
   }
 }

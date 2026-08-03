@@ -1,33 +1,41 @@
-<div class="conteneur">
-  <a routerLink="/rencontres" class="lien-retour">&larr; Retour à la liste</a>
+<div class="page">
+  <a routerLink="/rencontres" class="lien-discret lien-retour">
+    <i class="pi pi-arrow-left"></i> Retour à la liste
+  </a>
 
   @if (chargement()) {
-    <p>Chargement...</p>
+    <p>Chargement…</p>
   } @else if (erreur() && !rencontre()) {
     <p class="message-erreur">{{ erreur() }}</p>
   } @else if (rencontre(); as r) {
-    <h1>{{ r.titre }}</h1>
-    <p-tag [value]="r.statut" [severity]="severiteStatut(r.statut)" />
 
-    <dl class="details">
-      <dt>Type</dt>
-      <dd>{{ r.typeRencontre }}</dd>
+    <div class="entete-rencontre carte">
+      <div>
+        <p class="eyebrow">{{ r.typeRencontre }}</p>
+        <h1>{{ r.titre }}</h1>
+        <span class="pastille" [ngClass]="classeStatut(r.statut)">{{ r.statut }}</span>
+      </div>
 
-      <dt>Salle</dt>
-      <dd>{{ r.salleNom }}</dd>
+      @if (transitionsDisponibles().length > 0) {
+        <div class="actions-statut">
+          @for (statut of transitionsDisponibles(); track statut) {
+            <button class="bouton-mini" (click)="changerStatut(statut)" [disabled]="enCoursTransition()">
+              {{ libelleAction(statut) }}
+            </button>
+          }
+        </div>
+      } @else {
+        <span class="pastille pastille-neutre">Statut final</span>
+      }
+    </div>
 
-      <dt>Organisateur</dt>
-      <dd>{{ r.organisateurNomComplet }}</dd>
-
-      <dt>Début</dt>
-      <dd>{{ r.dateDebut | date: 'dd/MM/yyyy HH:mm' }}</dd>
-
-      <dt>Fin</dt>
-      <dd>{{ r.dateFin | date: 'dd/MM/yyyy HH:mm' }}</dd>
-
+    <dl class="grille-details">
+      <div><dt>Salle</dt><dd>{{ r.salleNom }}</dd></div>
+      <div><dt>Organisateur</dt><dd>{{ r.organisateurNomComplet }}</dd></div>
+      <div><dt>Début</dt><dd>{{ r.dateDebut | date: 'dd/MM/yyyy HH:mm' }}</dd></div>
+      <div><dt>Fin</dt><dd>{{ r.dateFin | date: 'dd/MM/yyyy HH:mm' }}</dd></div>
       @if (r.description) {
-        <dt>Description</dt>
-        <dd>{{ r.description }}</dd>
+        <div class="span-2"><dt>Description</dt><dd>{{ r.description }}</dd></div>
       }
     </dl>
 
@@ -35,199 +43,165 @@
       <p class="message-erreur">{{ erreur() }}</p>
     }
 
-    @if (transitionsDisponibles().length > 0) {
-      <div class="actions">
-        @for (statut of transitionsDisponibles(); track statut) {
-          <button (click)="changerStatut(statut)" [disabled]="enCoursTransition()">
-            {{ libelleAction(statut) }}
-          </button>
-        }
-      </div>
-    } @else {
-      <p class="info-terminal">Cette rencontre ne peut plus changer de statut.</p>
-    }
+    <!-- ---------- Inscriptions ---------- -->
+    <section class="section-bloc">
+      <h2><i class="pi pi-users"></i> Participants inscrits ({{ inscriptions().length }})</h2>
 
-    <hr class="separateur" />
-
-    <h2>Participants inscrits ({{ inscriptions().length }})</h2>
-
-    <div class="ajout-participant">
-      <select [ngModel]="participantSelectionne()" (ngModelChange)="participantSelectionne.set($event)">
-        <option value="">Sélectionner un participant</option>
-        @for (participant of participants(); track participant.id) {
-          <option [value]="participant.id">{{ participant.prenom }} {{ participant.nom }} ({{ participant.email }})</option>
-        }
-      </select>
-      <button (click)="inscrireParticipant()" [disabled]="inscriptionEnCours() || !participantSelectionne()">
-        Inscrire
-      </button>
-    </div>
-
-    @if (erreurInscription()) {
-      <p class="message-erreur">{{ erreurInscription() }}</p>
-    }
-
-    <table class="tableau-inscriptions">
-      <thead>
-        <tr>
-          <th>Participant</th>
-          <th>Email</th>
-          <th>Statut</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (inscription of inscriptions(); track inscription.id) {
-          <tr>
-            <td>{{ inscription.participantNomComplet }}</td>
-            <td>{{ inscription.participantEmail }}</td>
-            <td><p-tag [value]="inscription.statutPresence" [severity]="severitePresence(inscription.statutPresence)" /></td>
-            <td class="actions-inscription">
-              @if (peutGererPresence()) {
-                @for (statut of transitionsPresenceDisponibles(inscription); track statut) {
-                  <button class="bouton-mini" (click)="changerPresence(inscription, statut)">
-                    {{ libelleActionPresence(statut) }}
-                  </button>
-                }
-              } @else if (transitionsPresenceDisponibles(inscription).includes('ANNULE')) {
-                <button class="bouton-mini" (click)="annulerInscription(inscription)">Annuler</button>
-              }
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="4" class="message-vide">Aucun participant inscrit.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-
-    <hr class="separateur" />
-
-    <h2>Documents ({{ documents().length }})</h2>
-
-    <div class="depot-document">
-      <select [ngModel]="typeDocumentSelectionne()" (ngModelChange)="typeDocumentSelectionne.set($event)">
-        <option value="">Type de document</option>
-        @for (type of typesDocumentDisponibles; track type) {
-          <option [value]="type">{{ type }}</option>
-        }
-      </select>
-      <input type="file" (change)="surSelectionFichier($event)" />
-      <button (click)="deposerDocument()" [disabled]="depotEnCours() || !fichierSelectionne() || !typeDocumentSelectionne()">
-        {{ depotEnCours() ? 'Dépôt...' : 'Déposer' }}
-      </button>
-    </div>
-
-    @if (erreurDocument()) {
-      <p class="message-erreur">{{ erreurDocument() }}</p>
-    }
-
-    <table class="tableau-inscriptions">
-      <thead>
-        <tr>
-          <th>Fichier</th>
-          <th>Type</th>
-          <th>Taille</th>
-          <th>Déposé par</th>
-          <th>Date</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (doc of documents(); track doc.id) {
-          <tr>
-            <td>{{ doc.nomFichier }}</td>
-            <td>{{ doc.typeDocument }}</td>
-            <td>{{ formaterTaille(doc.tailleOctets) }}</td>
-            <td>{{ doc.deposeParNomComplet }}</td>
-            <td>{{ doc.dateDepot | date: 'dd/MM/yyyy HH:mm' }}</td>
-            <td class="actions-inscription">
-              <button class="bouton-mini" (click)="telechargerDocument(doc)">Télécharger</button>
-              <button class="bouton-mini" (click)="supprimerDocument(doc)">Supprimer</button>
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="6" class="message-vide">Aucun document déposé.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-
-    <hr class="separateur" />
-
-    <h2>Courrier ({{ courriers().length }})</h2>
-
-    <form [formGroup]="formulaireCourrier" (ngSubmit)="creerCourrier()" class="formulaire-courrier">
-      <select formControlName="sens">
-        <option value="" disabled>Sens</option>
-        <option value="ENTRANT">ENTRANT</option>
-        <option value="SORTANT">SORTANT</option>
-      </select>
-      <input type="text" formControlName="objet" placeholder="Objet" />
-      <input type="text" formControlName="expediteur" placeholder="Expéditeur" />
-      <input type="text" formControlName="destinataire" placeholder="Destinataire" />
-      <button type="submit" [disabled]="creationCourrierEnCours()">
-        {{ creationCourrierEnCours() ? 'Création...' : 'Enregistrer' }}
-      </button>
-    </form>
-
-    @if (erreurCourrier()) {
-      <p class="message-erreur">{{ erreurCourrier() }}</p>
-    }
-
-    <table class="tableau-inscriptions">
-      <thead>
-        <tr>
-          <th>Référence</th>
-          <th>Sens</th>
-          <th>Objet</th>
-          <th>Statut</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (courrier of courriers(); track courrier.id) {
-          <tr>
-            <td>{{ courrier.reference }}</td>
-            <td>{{ courrier.sens }}</td>
-            <td>{{ courrier.objet }}</td>
-            <td>
-              <p-tag [value]="courrier.statut" [severity]="severiteCourrier(courrier.statut)" />
-              @if (courrier.enRetard) {
-                <span class="badge-retard">EN RETARD</span>
-              }
-            </td>
-            <td class="actions-inscription">
-              @if (peutGererCourrier() && prochainStatut(courrier)) {
-                <button class="bouton-mini" (click)="avancerStatut(courrier)">
-                  → {{ prochainStatut(courrier) }}
-                </button>
-              }
-              <button class="bouton-mini" (click)="basculerHistorique(courrier)">Historique</button>
-            </td>
-          </tr>
-          @if (historiqueOuvert() === courrier.id) {
-            <tr>
-              <td colspan="5">
-                <ul class="liste-historique">
-                  @for (entree of historique(); track entree.id) {
-                    <li>
-                      {{ entree.ancienStatut || 'Création' }} → {{ entree.nouveauStatut }}
-                      par {{ entree.auteur }} le {{ entree.dateChangement | date: 'dd/MM/yyyy HH:mm' }}
-                    </li>
-                  }
-                </ul>
-              </td>
-            </tr>
+      <div class="barre-ajout">
+        <select [ngModel]="participantSelectionne()" (ngModelChange)="participantSelectionne.set($event)">
+          <option value="">Sélectionner un participant</option>
+          @for (participant of participants(); track participant.id) {
+            <option [value]="participant.id">{{ participant.prenom }} {{ participant.nom }} ({{ participant.email }})</option>
           }
-        } @empty {
-          <tr>
-            <td colspan="5" class="message-vide">Aucun courrier enregistré.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+        </select>
+        <button class="bouton-principal" (click)="inscrireParticipant()" [disabled]="inscriptionEnCours() || !participantSelectionne()">
+          <i class="pi pi-plus"></i> Inscrire
+        </button>
+      </div>
+
+      @if (erreurInscription()) {
+        <p class="message-erreur">{{ erreurInscription() }}</p>
+      }
+
+      <div class="carte-tableau">
+        <table class="tableau-simple">
+          <thead>
+            <tr><th>Participant</th><th>Email</th><th>Statut</th><th></th></tr>
+          </thead>
+          <tbody>
+            @for (inscription of inscriptions(); track inscription.id) {
+              <tr>
+                <td class="cellule-titre">{{ inscription.participantNomComplet }}</td>
+                <td>{{ inscription.participantEmail }}</td>
+                <td><span class="pastille" [ngClass]="classePresence(inscription.statutPresence)">{{ inscription.statutPresence }}</span></td>
+                <td class="actions-ligne">
+                  @if (peutGererPresence()) {
+                    @for (statut of transitionsPresenceDisponibles(inscription); track statut) {
+                      <button class="bouton-mini" (click)="changerPresence(inscription, statut)">{{ libelleActionPresence(statut) }}</button>
+                    }
+                  } @else if (transitionsPresenceDisponibles(inscription).includes('ANNULE')) {
+                    <button class="bouton-mini mini-danger" (click)="annulerInscription(inscription)">Annuler</button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="4"><div class="etat-vide"><i class="pi pi-users"></i><p>Aucun participant inscrit.</p></div></td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- Documents ---------- -->
+    <section class="section-bloc">
+      <h2><i class="pi pi-file"></i> Documents ({{ documents().length }})</h2>
+
+      <div class="barre-ajout">
+        <select [ngModel]="typeDocumentSelectionne()" (ngModelChange)="typeDocumentSelectionne.set($event)">
+          <option value="">Type de document</option>
+          @for (type of typesDocumentDisponibles; track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+        <input type="file" (change)="surSelectionFichier($event)" class="champ-fichier" />
+        <button class="bouton-principal" (click)="deposerDocument()" [disabled]="depotEnCours() || !fichierSelectionne() || !typeDocumentSelectionne()">
+          <i class="pi pi-upload"></i> {{ depotEnCours() ? 'Dépôt…' : 'Déposer' }}
+        </button>
+      </div>
+
+      @if (erreurDocument()) {
+        <p class="message-erreur">{{ erreurDocument() }}</p>
+      }
+
+      <div class="carte-tableau">
+        <table class="tableau-simple">
+          <thead>
+            <tr><th>Fichier</th><th>Type</th><th>Taille</th><th>Déposé par</th><th>Date</th><th></th></tr>
+          </thead>
+          <tbody>
+            @for (doc of documents(); track doc.id) {
+              <tr>
+                <td class="cellule-titre">{{ doc.nomFichier }}</td>
+                <td>{{ doc.typeDocument }}</td>
+                <td>{{ formaterTaille(doc.tailleOctets) }}</td>
+                <td>{{ doc.deposeParNomComplet }}</td>
+                <td>{{ doc.dateDepot | date: 'dd/MM/yy HH:mm' }}</td>
+                <td class="actions-ligne">
+                  <button class="bouton-mini" (click)="telechargerDocument(doc)"><i class="pi pi-download"></i></button>
+                  <button class="bouton-mini mini-danger" (click)="supprimerDocument(doc)"><i class="pi pi-trash"></i></button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="6"><div class="etat-vide"><i class="pi pi-file"></i><p>Aucun document déposé.</p></div></td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- Courrier ---------- -->
+    <section class="section-bloc">
+      <h2><i class="pi pi-envelope"></i> Courrier ({{ courriers().length }})</h2>
+
+      <form [formGroup]="formulaireCourrier" (ngSubmit)="creerCourrier()" class="barre-ajout">
+        <select formControlName="sens">
+          <option value="" disabled>Sens</option>
+          <option value="ENTRANT">Entrant</option>
+          <option value="SORTANT">Sortant</option>
+        </select>
+        <input type="text" formControlName="objet" placeholder="Objet" />
+        <input type="text" formControlName="expediteur" placeholder="Expéditeur" />
+        <input type="text" formControlName="destinataire" placeholder="Destinataire" />
+        <button type="submit" class="bouton-principal" [disabled]="creationCourrierEnCours()">
+          <i class="pi pi-plus"></i> {{ creationCourrierEnCours() ? 'Création…' : 'Enregistrer' }}
+        </button>
+      </form>
+
+      @if (erreurCourrier()) {
+        <p class="message-erreur">{{ erreurCourrier() }}</p>
+      }
+
+      <div class="carte-tableau">
+        <table class="tableau-simple">
+          <thead>
+            <tr><th>Référence</th><th>Sens</th><th>Objet</th><th>Statut</th><th></th></tr>
+          </thead>
+          <tbody>
+            @for (courrier of courriers(); track courrier.id) {
+              <tr>
+                <td class="cellule-titre">{{ courrier.reference }}</td>
+                <td>{{ courrier.sens }}</td>
+                <td>{{ courrier.objet }}</td>
+                <td>
+                  <span class="pastille" [ngClass]="classeCourrier(courrier.statut)">{{ courrier.statut }}</span>
+                  @if (courrier.enRetard) {
+                    <span class="pastille pastille-danger">En retard</span>
+                  }
+                </td>
+                <td class="actions-ligne">
+                  @if (peutGererCourrier() && prochainStatut(courrier)) {
+                    <button class="bouton-mini" (click)="avancerStatut(courrier)">→ {{ prochainStatut(courrier) }}</button>
+                  }
+                  <button class="bouton-mini" (click)="basculerHistorique(courrier)">Historique</button>
+                </td>
+              </tr>
+              @if (historiqueOuvert() === courrier.id) {
+                <tr>
+                  <td colspan="5">
+                    <ul class="liste-historique">
+                      @for (entree of historique(); track entree.id) {
+                        <li>{{ entree.ancienStatut || 'Création' }} → {{ entree.nouveauStatut }} par {{ entree.auteur }} le {{ entree.dateChangement | date: 'dd/MM/yy HH:mm' }}</li>
+                      }
+                    </ul>
+                  </td>
+                </tr>
+              }
+            } @empty {
+              <tr><td colspan="5"><div class="etat-vide"><i class="pi pi-envelope"></i><p>Aucun courrier enregistré.</p></div></td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
   }
 </div>

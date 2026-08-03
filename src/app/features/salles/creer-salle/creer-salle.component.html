@@ -1,22 +1,30 @@
-<div class="conteneur">
-  <h1>Créer une salle</h1>
+<div class="page-etroite formulaire-carte">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Salles</p>
+      <h1>Créer une salle</h1>
+    </div>
+  </div>
 
-  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="formulaire">
+  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
     <label for="nom">Nom</label>
-    <input id="nom" type="text" formControlName="nom" />
+    <input id="nom" type="text" formControlName="nom" placeholder="Salle Baobab" />
 
     <label for="capacite">Capacité</label>
-    <input id="capacite" type="number" min="1" formControlName="capacite" />
+    <input id="capacite" type="number" min="1" formControlName="capacite" placeholder="20" />
 
     <label for="localisation">Localisation</label>
-    <input id="localisation" type="text" formControlName="localisation" placeholder="Ex. Rez-de-chaussée" />
+    <input id="localisation" type="text" formControlName="localisation" placeholder="Rez-de-chaussée" />
 
     @if (messageErreur()) {
       <p class="message-erreur">{{ messageErreur() }}</p>
     }
 
-    <button type="submit" [disabled]="enCours()">
-      {{ enCours() ? 'Création...' : 'Créer la salle' }}
-    </button>
+    <div class="actions-formulaire">
+      <button type="submit" [disabled]="enCours()">
+        {{ enCours() ? 'Création…' : 'Créer la salle' }}
+      </button>
+      <a routerLink="/salles" class="lien-annuler">Annuler</a>
+    </div>
   </form>
 </div>

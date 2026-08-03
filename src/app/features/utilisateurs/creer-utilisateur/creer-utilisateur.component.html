@@ -1,7 +1,12 @@
-<div class="conteneur">
-  <h1>Créer un utilisateur</h1>
+<div class="page-etroite formulaire-carte">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Utilisateurs</p>
+      <h1>Créer un utilisateur</h1>
+    </div>
+  </div>
 
-  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="formulaire">
+  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
     <label for="nom">Nom</label>
     <input id="nom" type="text" formControlName="nom" />
 
@@ -9,7 +14,7 @@
     <input id="prenom" type="text" formControlName="prenom" />
 
     <label for="email">Email</label>
-    <input id="email" type="email" formControlName="email" />
+    <input id="email" type="email" formControlName="email" placeholder="prenom.nom@asn-technology.bf" />
 
     <label for="motDePasse">Mot de passe</label>
     <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="new-password" />
@@ -29,8 +34,11 @@
       <p class="message-erreur">{{ messageErreur() }}</p>
     }
 
-    <button type="submit" [disabled]="enCours()">
-      {{ enCours() ? 'Création...' : "Créer l'utilisateur" }}
-    </button>
+    <div class="actions-formulaire">
+      <button type="submit" [disabled]="enCours()">
+        {{ enCours() ? 'Création…' : "Créer l'utilisateur" }}
+      </button>
+      <a routerLink="/utilisateurs" class="lien-annuler">Annuler</a>
+    </div>
   </form>
 </div>

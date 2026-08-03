@@ -12,7 +12,7 @@
           <i class="pi {{ item.icone }}" aria-hidden="true"></i>
           <span>{{ item.libelle }}</span>
           @if (item.lien === '/alertes' && alertesNonTraitees() > 0) {
-            <span class="badge-compte">{{ alertesNonTraitees() }}</span>
+            <span class="badge-compte">{{ alertesNonTraitees() }}</span> 
           }
         </a>
       }
@@ -20,7 +20,7 @@
 
     <div class="pied-barre">
       <div class="separateur"></div>
-      <span class="version">Gestion des rencontres — v1.0</span>
+      <span class="version">Gestion des rencontres</span>
     </div>
   </aside>
 
@@ -35,7 +35,7 @@
       <a routerLink="/alertes" class="cloche-alertes" aria-label="Alertes">
         <i class="pi pi-bell"></i>
         @if (alertesNonTraitees() > 0) {
-          <span class="pastille"></span>
+          <span class="point-notification"></span>
         }
       </a>
 

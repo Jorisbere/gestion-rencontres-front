@@ -2,14 +2,13 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
 import { AlerteService } from '../../../core/services/alerte.service';
 import { Alerte, NiveauAlerte } from '../../../core/models/alerte.model';
 
 @Component({
   selector: 'app-liste-alertes',
   standalone: true,
-  imports: [CommonModule, RouterLink, TableModule, TagModule],
+  imports: [CommonModule, RouterLink, TableModule],
   templateUrl: './liste-alertes.component.html',
   styleUrl: './liste-alertes.component.scss'
 })
@@ -52,11 +51,11 @@ export class ListeAlertesComponent implements OnInit {
     });
   }
 
-  severiteNiveau(niveau: NiveauAlerte): 'info' | 'warn' | 'danger' {
+  classeNiveau(niveau: NiveauAlerte): string {
     switch (niveau) {
-      case 'INFO': return 'info';
-      case 'ATTENTION': return 'warn';
-      case 'CRITIQUE': return 'danger';
+      case 'INFO': return 'pastille-info';
+      case 'ATTENTION': return 'pastille-avert';
+      case 'CRITIQUE': return 'pastille-danger';
     }
   }
 }

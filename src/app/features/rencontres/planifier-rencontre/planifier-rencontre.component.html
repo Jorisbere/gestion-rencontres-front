@@ -1,9 +1,14 @@
-<div class="conteneur">
-  <h1>Planifier une rencontre</h1>
+<div class="page-etroite formulaire-carte">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Rencontres</p>
+      <h1>Planifier une rencontre</h1>
+    </div>
+  </div>
 
-  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="formulaire">
+  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
     <label for="titre">Titre</label>
-    <input id="titre" type="text" formControlName="titre" />
+    <input id="titre" type="text" formControlName="titre" placeholder="Réunion budget 2026" />
 
     <label for="typeRencontre">Type</label>
     <select id="typeRencontre" formControlName="typeRencontre">
@@ -34,8 +39,11 @@
       <p class="message-erreur">{{ messageErreur() }}</p>
     }
 
-    <button type="submit" [disabled]="enCours()">
-      {{ enCours() ? 'Création...' : 'Créer la rencontre' }}
-    </button>
+    <div class="actions-formulaire">
+      <button type="submit" [disabled]="enCours()">
+        {{ enCours() ? 'Création…' : 'Créer la rencontre' }}
+      </button>
+      <a routerLink="/rencontres" class="lien-annuler">Annuler</a>
+    </div>
   </form>
 </div>

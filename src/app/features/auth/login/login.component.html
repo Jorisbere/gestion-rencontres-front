@@ -1,8 +1,17 @@
 <div class="ecran-connexion">
   <div class="panneau-marque">
+    <svg class="fond-decoratif" viewBox="0 0 480 900" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="-40" y1="120" x2="560" y2="-60" stroke="#4A5B82" stroke-width="1" opacity="0.35"/>
+      <line x1="-40" y1="220" x2="560" y2="40" stroke="#4A5B82" stroke-width="1" opacity="0.35"/>
+      <line x1="-40" y1="320" x2="560" y2="140" stroke="#C99A3B" stroke-width="1.5" opacity="0.5"/>
+      <line x1="-40" y1="420" x2="560" y2="240" stroke="#4A5B82" stroke-width="1" opacity="0.3"/>
+      <line x1="-40" y1="520" x2="560" y2="340" stroke="#4A5B82" stroke-width="1" opacity="0.25"/>
+      <circle cx="440" cy="760" r="110" fill="none" stroke="#C99A3B" stroke-width="1" opacity="0.3"/>
+      <circle cx="440" cy="760" r="160" fill="none" stroke="#5B6E93" stroke-width="1" opacity="0.2"/>
+    </svg>
+
     <div class="marque">
-      <span class="marque-nom">ASN</span>
-      <span class="marque-suffixe">Technology</span>
+      <img src="images/logo-asn-technology.png" alt="ASN Technology" class="logo-marque" />
     </div>
     <h1>Gestion des rencontres professionnelles</h1>
     <p>Planification, salles, participants, courrier et statistiques réunis dans un seul outil.</p>
@@ -10,8 +19,9 @@
 
   <div class="panneau-formulaire">
     <form class="carte-connexion" [formGroup]="formulaire" (ngSubmit)="soumettre()">
-      <h2>Connexion</h2>
-      <p class="instruction">Entrez vos identifiants pour accéder à votre espace.</p>
+      <div class="icone-connexion">
+        <i class="pi pi-user"></i>
+      </div>
 
       <label for="email">Email</label>
       <input id="email" type="email" formControlName="email" autocomplete="username" placeholder="prenom.nom@asn-technology.bf" />

@@ -5,30 +5,38 @@
 
 .panneau-marque {
   flex: 1.1;
-  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-light) 100%);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, #0F1930 0%, var(--navy) 45%, #24365E 100%);
   color: #FFFFFF;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
+  text-align: center;
   padding: 64px;
 
+  .fond-decoratif {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .marque, h1, p {
+    position: relative;
+    z-index: 1;
+  }
+
   .marque {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
     margin-bottom: 40px;
   }
 
-  .marque-nom {
-    font-family: var(--font-titres);
-    font-weight: 700;
-    font-size: 26px;
-  }
-
-  .marque-suffixe {
-    font-size: 14px;
-    color: var(--gold-light);
-    font-weight: 500;
+  .logo-marque {
+    height: 64px;
+    width: auto;
+    border-radius: 6px;
   }
 
   h1 {
@@ -36,13 +44,14 @@
     font-size: 32px;
     line-height: 1.25;
     max-width: 420px;
-    margin-bottom: 16px;
+    margin: 0 auto 16px;
   }
 
   p {
     color: #AEB8CC;
     font-size: 15px;
     max-width: 380px;
+    margin: 0 auto;
     line-height: 1.6;
   }
 }
@@ -58,19 +67,30 @@
 
 .carte-connexion {
   width: 100%;
-  max-width: 360px;
+  max-width: 380px;
+  background-color: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--ombre-flottante);
+  overflow: hidden;
+  border-top: 4px solid var(--gold);
   display: flex;
   flex-direction: column;
+  padding: 32px 32px 28px;
 
-  h2 {
-    font-size: 22px;
-    margin-bottom: 4px;
-  }
+  .icone-connexion {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(150deg, var(--ocean) 0%, var(--navy) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
 
-  .instruction {
-    color: var(--ink-soft);
-    font-size: 13.5px;
-    margin: 0 0 28px;
+    i {
+      font-size: 28px;
+      color: #FFFFFF;
+    }
   }
 
   label {
@@ -78,6 +98,10 @@
     font-weight: 600;
     color: var(--ink);
     margin: 14px 0 6px;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
   }
 
   input {

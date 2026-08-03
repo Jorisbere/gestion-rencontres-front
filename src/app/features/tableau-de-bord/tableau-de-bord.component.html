@@ -1,0 +1,22 @@
+<div class="accueil">
+  @if (authService.utilisateurConnecte(); as utilisateur) {
+    <p class="eyebrow">{{ saluation() }}</p>
+    <h1>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+    <p class="sous-titre">Voici un accès rapide à ce que vous faites le plus souvent.</p>
+  }
+
+  <div class="grille-raccourcis">
+    @for (r of raccourcis; track r.lien) {
+      <a [routerLink]="r.lien" class="carte-raccourci">
+        <div class="icone-cercle">
+          <i class="pi {{ r.icone }}"></i>
+        </div>
+        <div>
+          <h3>{{ r.titre }}</h3>
+          <p>{{ r.description }}</p>
+        </div>
+        <i class="pi pi-arrow-right fleche"></i>
+      </a>
+    }
+  </div>
+</div>

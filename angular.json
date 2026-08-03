@@ -2,7 +2,8 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "8afdc760-0460-4a42-b9ad-af2a939c2122"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -43,6 +44,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -51,8 +53,8 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
+             "styles": [
+                "src/styles.scss"
             ]
           },
           "configurations": {

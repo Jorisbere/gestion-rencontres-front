@@ -1,0 +1,28 @@
+<div class="conteneur">
+  <h1>Ajouter un participant</h1>
+
+  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="formulaire">
+    <label for="nom">Nom</label>
+    <input id="nom" type="text" formControlName="nom" />
+
+    <label for="prenom">Prénom</label>
+    <input id="prenom" type="text" formControlName="prenom" />
+
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" />
+
+    <label for="telephone">Téléphone</label>
+    <input id="telephone" type="tel" formControlName="telephone" />
+
+    <label for="organisation">Organisation</label>
+    <input id="organisation" type="text" formControlName="organisation" />
+
+    @if (messageErreur()) {
+      <p class="message-erreur">{{ messageErreur() }}</p>
+    }
+
+    <button type="submit" [disabled]="enCours()">
+      {{ enCours() ? 'Ajout...' : 'Ajouter le participant' }}
+    </button>
+  </form>
+</div>

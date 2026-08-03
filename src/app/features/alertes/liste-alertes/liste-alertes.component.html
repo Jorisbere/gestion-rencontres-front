@@ -1,0 +1,53 @@
+<div class="conteneur">
+  <div class="entete">
+    <h1>Alertes</h1>
+    <button class="bouton-lien" (click)="basculerAffichage()">
+      {{ afficherTraitees() ? 'Voir uniquement les non traitées' : 'Voir aussi les traitées' }}
+    </button>
+  </div>
+
+  @if (erreur()) {
+    <p class="message-erreur">{{ erreur() }}</p>
+  }
+
+  <p-table [value]="alertes()" [loading]="chargement()" [paginator]="true" [rows]="10"
+           styleClass="p-datatable-sm" [rowHover]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Type</th>
+        <th>Niveau</th>
+        <th>Concerne</th>
+        <th>Message</th>
+        <th>Créée le</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-alerte>
+      <tr [class.ligne-traitee]="alerte.traitee">
+        <td>{{ alerte.type }}</td>
+        <td><p-tag [value]="alerte.niveau" [severity]="severiteNiveau(alerte.niveau)" /></td>
+        <td>
+          @if (alerte.rencontreId) {
+            <a [routerLink]="['/rencontres', alerte.rencontreId]">{{ alerte.rencontreLibelle }}</a>
+          } @else if (alerte.courrierLibelle) {
+            {{ alerte.courrierLibelle }}
+          }
+        </td>
+        <td>{{ alerte.message }}</td>
+        <td>{{ alerte.dateCreation | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>
+          @if (!alerte.traitee) {
+            <button class="bouton-mini" (click)="traiter(alerte)">Marquer traitée</button>
+          } @else {
+            <span class="libelle-traitee">Traitée</span>
+          }
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="message-vide">Aucune alerte à afficher.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

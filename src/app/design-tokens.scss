@@ -1,0 +1,42 @@
+// ============================================================
+// ASN Technology — Système de design
+// Palette, typographie et tokens réutilisés dans toute l'app
+// ============================================================
+
+:root {
+  // Couleurs — cœur du système
+  --navy: #16233F;        // barre latérale, titres
+  --navy-light: #223258;
+  --ocean: #2E6F9E;       // interactif : liens, boutons, focus
+  --ocean-dark: #235579;
+  --gold: #C99A3B;        // signature : accents, indicateurs actifs
+  --gold-light: #E3C888;
+
+  --paper: #F5F6F8;       // fond général de l'application
+  --surface: #FFFFFF;     // cartes, panneaux
+  --ink: #1D2433;         // texte principal
+  --ink-soft: #545B6B;    // texte secondaire
+  --mist: #E2E5EA;        // bordures, séparateurs
+
+  // Statuts sémantiques
+  --success: #2F9E63;
+  --success-bg: #E7F5EC;
+  --warning: #E1A73B;
+  --warning-bg: #FBF1DE;
+  --danger: #C0392B;
+  --danger-bg: #FBEAE8;
+  --info: #2E6F9E;
+  --info-bg: #E8F1F8;
+  --neutral-bg: #EEF0F3;
+
+  // Typographie
+  --font-titres: 'Space Grotesk', sans-serif;
+  --font-corps: 'Inter', sans-serif;
+
+  // Rayons et ombres
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --ombre-carte: 0 1px 2px rgba(22, 35, 63, 0.06), 0 1px 8px rgba(22, 35, 63, 0.04);
+  --ombre-flottante: 0 4px 16px rgba(22, 35, 63, 0.12);
+}

@@ -1,1 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+@import "design-tokens";
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-corps);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-titres);
+  color: var(--navy);
+  margin: 0;
+}
+
+a {
+  color: var(--ocean);
+}
+
+// Focus visible cohérent sur toute l'application (accessibilité clavier)
+:focus-visible {
+  outline: 2px solid var(--ocean);
+  outline-offset: 2px;
+}
+
+// Réduction de mouvement respectée pour les personnes qui le demandent
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

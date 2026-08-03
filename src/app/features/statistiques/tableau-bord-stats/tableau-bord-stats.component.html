@@ -1,0 +1,112 @@
+<div class="conteneur">
+  <h1>Statistiques</h1>
+
+  @if (chargement()) {
+    <p>Chargement...</p>
+  } @else if (erreur()) {
+    <p class="message-erreur">{{ erreur() }}</p>
+  } @else if (donnees(); as d) {
+
+    <div class="cartes">
+      <div class="carte">
+        <span class="valeur-carte">{{ totalRencontres() }}</span>
+        <span class="libelle-carte">Rencontres au total</span>
+      </div>
+      <div class="carte">
+        <span class="valeur-carte">{{ d.participantsDistincts }}</span>
+        <span class="libelle-carte">Participants distincts</span>
+      </div>
+      <div class="carte">
+        <span class="valeur-carte">{{ d.tauxPresence.tauxPourcentage }}%</span>
+        <span class="libelle-carte">Taux de présence global</span>
+        <span class="detail-carte">{{ d.tauxPresence.totalPresents }} / {{ d.tauxPresence.totalInscrits }} inscrits</span>
+      </div>
+    </div>
+
+    <div class="grille-indicateurs">
+      <section class="bloc">
+        <h2>Rencontres par type</h2>
+        @for (item of d.rencontresParType; track item.cle) {
+          <div class="ligne-barre">
+            <span class="etiquette">{{ item.cle }}</span>
+            <div class="barre-fond">
+              <div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.rencontresParType)"></div>
+            </div>
+            <span class="valeur">{{ item.valeur }}</span>
+          </div>
+        }
+      </section>
+
+      <section class="bloc">
+        <h2>Rencontres par statut</h2>
+        @for (item of d.rencontresParStatut; track item.cle) {
+          <div class="ligne-barre">
+            <span class="etiquette">{{ item.cle }}</span>
+            <div class="barre-fond">
+              <div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.rencontresParStatut)"></div>
+            </div>
+            <span class="valeur">{{ item.valeur }}</span>
+          </div>
+        }
+      </section>
+
+      <section class="bloc">
+        <h2>Rencontres par mois</h2>
+        @for (item of d.rencontresParMois; track item.mois) {
+          <div class="ligne-barre">
+            <span class="etiquette">{{ item.mois }}</span>
+            <div class="barre-fond">
+              <div class="barre-remplissage" [style.width.%]="pourcentageBarreMois(item.total, d.rencontresParMois)"></div>
+            </div>
+            <span class="valeur">{{ item.total }}</span>
+          </div>
+        } @empty {
+          <p class="message-vide">Aucune donnée.</p>
+        }
+      </section>
+
+      <section class="bloc">
+        <h2>Occupation des salles (mois en cours)</h2>
+        @for (salle of d.tauxOccupationSalles; track salle.salleId) {
+          <div class="ligne-barre">
+            <span class="etiquette">{{ salle.salleNom }}</span>
+            <div class="barre-fond">
+              <div class="barre-remplissage" [style.width.%]="pourcentageBarreOccupation(salle)"></div>
+            </div>
+            <span class="valeur">{{ salle.tauxOccupationPourcentage }}%</span>
+          </div>
+        }
+      </section>
+
+      <section class="bloc">
+        <h2>Volume de courrier</h2>
+        @for (item of d.volumeCourrierParSens; track item.cle) {
+          <div class="ligne-barre">
+            <span class="etiquette">{{ item.cle }}</span>
+            <div class="barre-fond">
+              <div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.volumeCourrierParSens)"></div>
+            </div>
+            <span class="valeur">{{ item.valeur }}</span>
+          </div>
+        } @empty {
+          <p class="message-vide">Aucun courrier enregistré.</p>
+        }
+      </section>
+
+      <section class="bloc">
+        <h2>Alertes par type</h2>
+        @for (item of d.alertesParType; track item.cle) {
+          <div class="ligne-barre">
+            <span class="etiquette">{{ item.cle }}</span>
+            <div class="barre-fond">
+              <div class="barre-remplissage" [style.width.%]="pourcentageBarre(item.valeur, d.alertesParType)"></div>
+            </div>
+            <span class="valeur">{{ item.valeur }}</span>
+          </div>
+        } @empty {
+          <p class="message-vide">Aucune alerte enregistrée.</p>
+        }
+      </section>
+    </div>
+  }
+</div>

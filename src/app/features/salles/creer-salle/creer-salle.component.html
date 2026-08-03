@@ -1,0 +1,22 @@
+<div class="conteneur">
+  <h1>Créer une salle</h1>
+
+  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="formulaire">
+    <label for="nom">Nom</label>
+    <input id="nom" type="text" formControlName="nom" />
+
+    <label for="capacite">Capacité</label>
+    <input id="capacite" type="number" min="1" formControlName="capacite" />
+
+    <label for="localisation">Localisation</label>
+    <input id="localisation" type="text" formControlName="localisation" placeholder="Ex. Rez-de-chaussée" />
+
+    @if (messageErreur()) {
+      <p class="message-erreur">{{ messageErreur() }}</p>
+    }
+
+    <button type="submit" [disabled]="enCours()">
+      {{ enCours() ? 'Création...' : 'Créer la salle' }}
+    </button>
+  </form>
+</div>

@@ -1,0 +1,62 @@
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { AlerteService } from '../../../core/services/alerte.service';
+import { Alerte, NiveauAlerte } from '../../../core/models/alerte.model';
+
+@Component({
+  selector: 'app-liste-alertes',
+  standalone: true,
+  imports: [CommonModule, RouterLink, TableModule, TagModule],
+  templateUrl: './liste-alertes.component.html',
+  styleUrl: './liste-alertes.component.scss'
+})
+export class ListeAlertesComponent implements OnInit {
+  private readonly alerteService = inject(AlerteService);
+
+  readonly alertes = signal<Alerte[]>([]);
+  readonly chargement = signal(true);
+  readonly erreur = signal<string | null>(null);
+  readonly afficherTraitees = signal(false);
+
+  ngOnInit(): void {
+    this.charger();
+  }
+
+  charger(): void {
+    this.chargement.set(true);
+    const filtre = this.afficherTraitees() ? undefined : false;
+    this.alerteService.lister(filtre).subscribe({
+      next: (donnees) => {
+        this.alertes.set(donnees);
+        this.chargement.set(false);
+      },
+      error: () => {
+        this.erreur.set('Impossible de charger les alertes.');
+        this.chargement.set(false);
+      }
+    });
+  }
+
+  basculerAffichage(): void {
+    this.afficherTraitees.set(!this.afficherTraitees());
+    this.charger();
+  }
+
+  traiter(alerte: Alerte): void {
+    this.alerteService.traiter(alerte.id).subscribe({
+      next: () => this.charger(),
+      error: () => this.erreur.set("Impossible de marquer cette alerte comme traitée.")
+    });
+  }
+
+  severiteNiveau(niveau: NiveauAlerte): 'info' | 'warn' | 'danger' {
+    switch (niveau) {
+      case 'INFO': return 'info';
+      case 'ATTENTION': return 'warn';
+      case 'CRITIQUE': return 'danger';
+    }
+  }
+}

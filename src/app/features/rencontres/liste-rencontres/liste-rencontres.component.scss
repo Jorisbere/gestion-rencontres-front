@@ -1,0 +1,196 @@
+.page {
+  max-width: 1200px;
+}
+
+.entete-page {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 4px;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+.bouton-principal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  background-color: var(--ocean);
+  color: #FFFFFF;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: var(--font-titres);
+  transition: background-color 0.15s ease;
+
+  i {
+    font-size: 12px;
+  }
+
+  &:hover {
+    background-color: var(--ocean-dark);
+  }
+}
+
+.barre-filtres {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 7px 16px;
+  border-radius: 20px;
+  background-color: var(--surface);
+  border: 1px solid var(--mist);
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+
+  &:hover {
+    border-color: var(--ocean);
+    color: var(--ocean);
+  }
+
+  &.chip-actif {
+    background-color: var(--navy);
+    border-color: var(--navy);
+    color: #FFFFFF;
+  }
+}
+
+.message-erreur {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background-color: var(--danger-bg);
+  color: var(--danger);
+  font-size: 13.5px;
+  margin-bottom: 16px;
+}
+
+.carte-tableau {
+  background-color: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--ombre-carte);
+  overflow: hidden;
+}
+
+.cellule-titre {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.pastille {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+
+  &.pastille-info { background-color: var(--info-bg); color: var(--ocean-dark); }
+  &.pastille-succes { background-color: var(--success-bg); color: var(--success); }
+  &.pastille-avert { background-color: var(--warning-bg); color: #8A6215; }
+  &.pastille-neutre { background-color: var(--neutral-bg); color: var(--ink-soft); }
+  &.pastille-danger { background-color: var(--danger-bg); color: var(--danger); }
+}
+
+.bouton-voir {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ocean);
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+
+  i {
+    font-size: 10px;
+    transition: transform 0.15s ease;
+  }
+
+  &:hover i {
+    transform: translateX(2px);
+  }
+}
+
+.etat-vide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 0;
+  color: var(--ink-soft);
+
+  i {
+    font-size: 28px;
+    color: var(--mist);
+  }
+
+  p {
+    margin: 0;
+    font-size: 13.5px;
+  }
+}
+
+// ---------- Recalibrage du thème PrimeNG pour coller au système de design ----------
+:host ::ng-deep {
+  .tableau-rencontres {
+    font-family: var(--font-corps);
+    font-size: 13px;
+
+    .p-datatable-thead > tr > th {
+      background-color: var(--paper);
+      color: var(--ink-soft);
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 12px 16px;
+      border: none;
+      border-bottom: 1px solid var(--mist);
+    }
+
+    .p-datatable-tbody > tr {
+      > td {
+        padding: 14px 16px;
+        border: none;
+        border-bottom: 1px solid var(--mist);
+        color: var(--ink);
+      }
+
+      &:hover > td {
+        background-color: var(--paper);
+      }
+
+      &:last-child > td {
+        border-bottom: none;
+      }
+    }
+
+    .p-paginator {
+      border: none;
+      border-top: 1px solid var(--mist);
+      padding: 10px 16px;
+      background-color: var(--surface);
+    }
+  }
+}

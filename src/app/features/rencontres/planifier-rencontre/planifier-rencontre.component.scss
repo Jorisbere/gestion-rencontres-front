@@ -1,0 +1,55 @@
+.conteneur {
+  max-width: 480px;
+  margin: 24px auto;
+  padding: 24px;
+
+  h1 {
+    color: #1f3864;
+    margin-bottom: 16px;
+  }
+}
+
+.formulaire {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: #333333;
+  }
+
+  input, select, textarea {
+    padding: 8px 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+
+  .message-erreur {
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #fdecea;
+    color: #c0392b;
+    font-size: 13px;
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #1f3864;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:disabled {
+      background-color: #a0a0a0;
+      cursor: not-allowed;
+    }
+  }
+}

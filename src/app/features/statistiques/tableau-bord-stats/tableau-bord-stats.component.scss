@@ -1,0 +1,112 @@
+.conteneur {
+  padding: 24px;
+}
+
+h1 {
+  color: #1f3864;
+  margin-bottom: 20px;
+}
+
+.message-erreur {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #fdecea;
+  color: #c0392b;
+}
+
+.cartes {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.carte {
+  flex: 1;
+  min-width: 180px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.valeur-carte {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f3864;
+}
+
+.libelle-carte {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #555555;
+}
+
+.detail-carte {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #888888;
+}
+
+.grille-indicateurs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.bloc {
+  padding: 18px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+
+  h2 {
+    margin: 0 0 12px;
+    font-size: 15px;
+    color: #1f3864;
+  }
+}
+
+.message-vide {
+  color: #888888;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.ligne-barre {
+  display: grid;
+  grid-template-columns: 110px 1fr 50px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+
+  .etiquette {
+    color: #333333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .valeur {
+    text-align: right;
+    color: #555555;
+    font-weight: 600;
+  }
+}
+
+.barre-fond {
+  height: 10px;
+  border-radius: 5px;
+  background-color: #f2f6fc;
+  overflow: hidden;
+}
+
+.barre-remplissage {
+  height: 100%;
+  border-radius: 5px;
+  background-color: #2e75b6;
+  transition: width 0.3s ease;
+}

@@ -1,0 +1,61 @@
+<div class="coquille" [class.menu-ouvert]="menuMobileOuvert()">
+
+  <aside class="barre-laterale">
+    <div class="marque">
+      <span class="marque-nom">ASN</span>
+      <span class="marque-suffixe">Technology</span>
+    </div>
+
+    <nav class="navigation">
+      @for (item of navigationVisible(); track item.lien) {
+        <a [routerLink]="item.lien" routerLinkActive="actif" class="lien-nav">
+          <i class="pi {{ item.icone }}" aria-hidden="true"></i>
+          <span>{{ item.libelle }}</span>
+          @if (item.lien === '/alertes' && alertesNonTraitees() > 0) {
+            <span class="badge-compte">{{ alertesNonTraitees() }}</span>
+          }
+        </a>
+      }
+    </nav>
+
+    <div class="pied-barre">
+      <div class="separateur"></div>
+      <span class="version">Gestion des rencontres — v1.0</span>
+    </div>
+  </aside>
+
+  <div class="zone-principale">
+    <header class="barre-superieure">
+      <button class="bouton-menu-mobile" (click)="basculerMenuMobile()" aria-label="Ouvrir le menu">
+        <i class="pi pi-bars"></i>
+      </button>
+
+      <div class="espace-flexible"></div>
+
+      <a routerLink="/alertes" class="cloche-alertes" aria-label="Alertes">
+        <i class="pi pi-bell"></i>
+        @if (alertesNonTraitees() > 0) {
+          <span class="pastille"></span>
+        }
+      </a>
+
+      @if (authService.utilisateurConnecte(); as utilisateur) {
+        <div class="profil">
+          <div class="avatar">{{ initiales() }}</div>
+          <div class="profil-texte">
+            <span class="profil-nom">{{ utilisateur.prenom }} {{ utilisateur.nom }}</span>
+            <span class="profil-role">{{ utilisateur.role }}</span>
+          </div>
+        </div>
+      }
+
+      <button class="bouton-deconnexion" (click)="authService.deconnecter()" aria-label="Déconnexion">
+        <i class="pi pi-sign-out"></i>
+      </button>
+    </header>
+
+    <main class="contenu">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<div class="conteneur">
+  <h1>Planifier une rencontre</h1>
+
+  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="formulaire">
+    <label for="titre">Titre</label>
+    <input id="titre" type="text" formControlName="titre" />
+
+    <label for="typeRencontre">Type</label>
+    <select id="typeRencontre" formControlName="typeRencontre">
+      <option value="" disabled>Sélectionner un type</option>
+      @for (type of typesDisponibles; track type) {
+        <option [value]="type">{{ type }}</option>
+      }
+    </select>
+
+    <label for="salleId">Salle</label>
+    <select id="salleId" formControlName="salleId">
+      <option value="" disabled>Sélectionner une salle</option>
+      @for (salle of salles(); track salle.id) {
+        <option [value]="salle.id">{{ salle.nom }} ({{ salle.capacite }} places)</option>
+      }
+    </select>
+
+    <label for="dateDebut">Date et heure de début</label>
+    <input id="dateDebut" type="datetime-local" formControlName="dateDebut" />
+
+    <label for="dateFin">Date et heure de fin</label>
+    <input id="dateFin" type="datetime-local" formControlName="dateFin" />
+
+    <label for="description">Description</label>
+    <textarea id="description" formControlName="description" rows="3"></textarea>
+
+    @if (messageErreur()) {
+      <p class="message-erreur">{{ messageErreur() }}</p>
+    }
+
+    <button type="submit" [disabled]="enCours()">
+      {{ enCours() ? 'Création...' : 'Créer la rencontre' }}
+    </button>
+  </form>
+</div>

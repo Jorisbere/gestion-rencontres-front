@@ -1,0 +1,37 @@
+<div class="ecran-connexion">
+  <div class="panneau-marque">
+    <div class="marque">
+      <span class="marque-nom">ASN</span>
+      <span class="marque-suffixe">Technology</span>
+    </div>
+    <h1>Gestion des rencontres professionnelles</h1>
+    <p>Planification, salles, participants, courrier et statistiques réunis dans un seul outil.</p>
+  </div>
+
+  <div class="panneau-formulaire">
+    <form class="carte-connexion" [formGroup]="formulaire" (ngSubmit)="soumettre()">
+      <h2>Connexion</h2>
+      <p class="instruction">Entrez vos identifiants pour accéder à votre espace.</p>
+
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" autocomplete="username" placeholder="prenom.nom@asn-technology.bf" />
+      @if (formulaire.get('email')?.invalid && formulaire.get('email')?.touched) {
+        <span class="erreur-champ">Entrez une adresse email valide</span>
+      }
+
+      <label for="motDePasse">Mot de passe</label>
+      <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="current-password" />
+      @if (formulaire.get('motDePasse')?.invalid && formulaire.get('motDePasse')?.touched) {
+        <span class="erreur-champ">Le mot de passe est requis</span>
+      }
+
+      @if (messageErreur()) {
+        <p class="erreur-generale">{{ messageErreur() }}</p>
+      }
+
+      <button type="submit" [disabled]="enCours()">
+        {{ enCours() ? 'Connexion…' : 'Se connecter' }}
+      </button>
+    </form>
+  </div>
+</div>

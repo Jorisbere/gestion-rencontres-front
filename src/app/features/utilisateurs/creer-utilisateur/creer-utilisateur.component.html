@@ -1,0 +1,36 @@
+<div class="conteneur">
+  <h1>Créer un utilisateur</h1>
+
+  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="formulaire">
+    <label for="nom">Nom</label>
+    <input id="nom" type="text" formControlName="nom" />
+
+    <label for="prenom">Prénom</label>
+    <input id="prenom" type="text" formControlName="prenom" />
+
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" />
+
+    <label for="motDePasse">Mot de passe</label>
+    <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="new-password" />
+    @if (formulaire.get('motDePasse')?.invalid && formulaire.get('motDePasse')?.touched) {
+      <span class="erreur-champ">8 caractères minimum</span>
+    }
+
+    <label for="role">Rôle</label>
+    <select id="role" formControlName="role">
+      <option value="" disabled>Sélectionner un rôle</option>
+      @for (role of rolesDisponibles; track role) {
+        <option [value]="role">{{ role }}</option>
+      }
+    </select>
+
+    @if (messageErreur()) {
+      <p class="message-erreur">{{ messageErreur() }}</p>
+    }
+
+    <button type="submit" [disabled]="enCours()">
+      {{ enCours() ? 'Création...' : "Créer l'utilisateur" }}
+    </button>
+  </form>
+</div>

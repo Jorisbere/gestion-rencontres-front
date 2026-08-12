@@ -20,6 +20,11 @@ export class InscriptionService {
     return this.http.post<Inscription>(this.baseUrl(rencontreId), { participantId });
   }
 
+  /** Inscrit directement un Agent ASN, sans passer par une fiche Invité créée au préalable. */
+  inscrireAgent(rencontreId: number, agentId: number): Observable<Inscription> {
+    return this.http.post<Inscription>(`${this.baseUrl(rencontreId)}/agent/${agentId}`, {});
+  }
+
   changerStatutPresence(rencontreId: number, inscriptionId: number, statut: StatutPresence): Observable<Inscription> {
     return this.http.patch<Inscription>(
       `${this.baseUrl(rencontreId)}/${inscriptionId}/presence?statut=${statut}`, {}

@@ -1,0 +1,37 @@
+<div class="page-etroite formulaire-carte">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Utilisateurs</p>
+      <h1>Modifier l'utilisateur</h1>
+    </div>
+  </div>
+
+  @if (chargement()) {
+    <p>Chargement…</p>
+  } @else {
+    <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
+      <label>Agent</label>
+      <input type="text" [value]="nomAgent()" disabled />
+      <span class="erreur-champ">Le compte ne peut pas être rattaché à un autre agent depuis cet écran.</span>
+
+      <label for="role">Rôle</label>
+      <select id="role" formControlName="role">
+        <option value="" disabled>Sélectionner un rôle</option>
+        @for (role of rolesDisponibles; track role) {
+          <option [value]="role">{{ role }}</option>
+        }
+      </select>
+
+      @if (messageErreur()) {
+        <p class="message-erreur">{{ messageErreur() }}</p>
+      }
+
+      <div class="actions-formulaire">
+        <button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Enregistrement…' : 'Enregistrer les modifications' }}
+        </button>
+        <a routerLink="/utilisateurs" class="lien-annuler">Annuler</a>
+      </div>
+    </form>
+  }
+</div>

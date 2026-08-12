@@ -109,6 +109,20 @@ a {
   border: 1px solid var(--mist);
 
   &:hover { border-color: var(--ocean); color: var(--ocean); }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    &:hover { border-color: var(--mist); color: var(--ink); }
+  }
+}
+
+.actions-entete {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .barre-filtres {
@@ -206,7 +220,15 @@ a {
   &:hover i { transform: translateX(2px); }
 }
 
+.actions-ligne {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .bouton-mini {
+  display: inline-block;
   padding: 5px 12px;
   border: 1px solid var(--mist);
   border-radius: var(--radius-sm);
@@ -214,6 +236,7 @@ a {
   color: var(--ink);
   font-size: 12px;
   font-weight: 500;
+  text-decoration: none;
   cursor: pointer;
   transition: all 0.15s ease;
 

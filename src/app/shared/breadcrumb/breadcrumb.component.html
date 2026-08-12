@@ -1,0 +1,15 @@
+@if (segments().length > 0) {
+  <nav class="fil-ariane" aria-label="Fil d'Ariane">
+    <a routerLink="/tableau-de-bord" class="crumb-accueil" aria-label="Tableau de bord">
+      <i class="pi pi-home"></i>
+    </a>
+    @for (segment of segments(); track $index; let dernier = $last) {
+      <i class="pi pi-angle-right crumb-separateur" aria-hidden="true"></i>
+      @if (segment.link && !dernier) {
+        <a [routerLink]="segment.link" class="crumb-lien">{{ segment.label }}</a>
+      } @else {
+        <span class="crumb-actuel">{{ segment.label }}</span>
+      }
+    }
+  </nav>
+}

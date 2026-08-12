@@ -1,15 +1,14 @@
-export type RoleUtilisateur = 'ADMINISTRATEUR' | 'ORGANISATEUR' | 'SECRETARIAT';
+export type RoleUtilisateur = 'ADMINISTRATEUR' | 'ORGANISATEUR' | 'SECRETARIAT' | 'AGENT';
 
 export interface UtilisateurRequest {
-  nom: string;
-  prenom: string;
-  email: string;
+  agentId: number;
   motDePasse: string;
   role: RoleUtilisateur;
 }
 
 export interface Utilisateur {
   id: number;
+  agentId: number;
   nom: string;
   prenom: string;
   email: string;

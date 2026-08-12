@@ -12,7 +12,7 @@
           <i class="pi {{ item.icone }}" aria-hidden="true"></i>
           <span>{{ item.libelle }}</span>
           @if (item.lien === '/alertes' && alertesNonTraitees() > 0) {
-            <span class="badge-compte">{{ alertesNonTraitees() }}</span> 
+            <span class="badge-compte">{{ alertesNonTraitees() }}</span>
           }
         </a>
       }
@@ -30,23 +30,114 @@
         <i class="pi pi-bars"></i>
       </button>
 
+      @if (!authService.aLeRole('AGENT')) {
+        <div class="zone-recherche">
+          <i class="pi pi-search" aria-hidden="true"></i>
+          <input
+            #champRecherche
+            type="text"
+            placeholder="Rechercher une rencontre, un invité, un agent, une salle, un courrier… (/)"
+            (input)="onRechercheInput($event)"
+            (focus)="reouvrirRecherche($event)"
+            (blur)="fermerRecherche()"
+            (keydown)="onRechercheKeydown($event)"
+          />
+          @if (rechercheOuverte()) {
+            <div class="resultats-recherche">
+              @if (rechercheEnCours()) {
+                <div class="resultat-etat">Recherche…</div>
+              } @else if (resultatsRecherche().length === 0) {
+                <div class="resultat-etat">Aucun résultat.</div>
+              } @else {
+                @for (resultat of resultatsRecherche(); track resultat.type + resultat.id; let i = $index) {
+                  <button
+                    type="button"
+                    class="ligne-resultat"
+                    [class.ligne-surlignee]="i === indexSurligne()"
+                    (mousedown)="allerVersResultat(resultat)"
+                  >
+                    <i class="pi" [ngClass]="iconePourType(resultat.type)" aria-hidden="true"></i>
+                    <span class="resultat-texte">
+                      <span class="resultat-titre">{{ resultat.titre }}</span>
+                      <span class="resultat-sous-titre">{{ resultat.sousTitre }}</span>
+                    </span>
+                  </button>
+                }
+              }
+            </div>
+          }
+        </div>
+
+        <button
+          type="button"
+          class="bouton-recherche-mobile"
+          aria-label="Rechercher"
+          (click)="basculerRechercheMobile()"
+        >
+          <i class="pi pi-search"></i>
+        </button>
+      }
+
       <div class="espace-flexible"></div>
 
-      <a routerLink="/alertes" class="cloche-alertes" aria-label="Alertes">
-        <i class="pi pi-bell"></i>
-        @if (alertesNonTraitees() > 0) {
-          <span class="point-notification"></span>
-        }
-      </a>
+      @if (!authService.aLeRole('AGENT')) {
+        <div class="zone-cloche">
+          <button
+            type="button"
+            class="cloche-alertes"
+            aria-label="Alertes"
+            (click)="basculerApercuAlertes()"
+            (blur)="fermerApercuAlertes()"
+          >
+            <i class="pi pi-bell"></i>
+            @if (alertesNonTraitees() > 0) {
+              <span class="point-notification"></span>
+            }
+          </button>
+
+          @if (apercuAlertesOuvert()) {
+            <div class="apercu-alertes">
+              <div class="apercu-entete">
+                <span>Alertes non traitées</span>
+                @if (alertesNonTraitees() > 0) {
+                  <span class="apercu-compte">{{ alertesNonTraitees() }}</span>
+                }
+              </div>
+
+              @if (chargementApercuAlertes()) {
+                <div class="resultat-etat">Chargement…</div>
+              } @else if (alertesApercu().length === 0) {
+                <div class="resultat-etat">Aucune alerte en attente.</div>
+              } @else {
+                @for (alerte of alertesApercu(); track alerte.id) {
+                  <button type="button" class="ligne-alerte" (mousedown)="allerVersAlerte(alerte)">
+                    <span class="pastille-niveau" [ngClass]="classeNiveauAlerte(alerte.niveau)"></span>
+                    <span class="alerte-texte">
+                      <span class="alerte-message">{{ alerte.message }}</span>
+                      @if (alerte.rencontreLibelle) {
+                        <span class="alerte-sous-titre">{{ alerte.rencontreLibelle }}</span>
+                      }
+                    </span>
+                  </button>
+                }
+              }
+
+              <a routerLink="/alertes" class="apercu-pied" (mousedown)="apercuAlertesOuvert.set(false)">
+                Voir toutes les alertes
+              </a>
+            </div>
+          }
+        </div>
+      }
 
       @if (authService.utilisateurConnecte(); as utilisateur) {
-        <div class="profil">
+        <a routerLink="/mon-profil" class="profil">
           <div class="avatar">{{ initiales() }}</div>
           <div class="profil-texte">
             <span class="profil-nom">{{ utilisateur.prenom }} {{ utilisateur.nom }}</span>
             <span class="profil-role">{{ utilisateur.role }}</span>
           </div>
-        </div>
+        </a>
       }
 
       <button class="bouton-deconnexion" (click)="authService.deconnecter()" aria-label="Déconnexion">
@@ -55,7 +146,51 @@
     </header>
 
     <main class="contenu">
+      <app-breadcrumb />
       <router-outlet></router-outlet>
     </main>
   </div>
+
+  @if (rechercheMobileOuverte()) {
+    <div class="overlay-recherche-mobile">
+      <div class="entete-overlay-recherche">
+        <i class="pi pi-search" aria-hidden="true"></i>
+        <input
+          #champRechercheMobile
+          type="text"
+          placeholder="Rechercher une rencontre, un invité, un agent, une salle, un courrier…"
+          (input)="onRechercheInput($event)"
+          (keydown)="onRechercheKeydown($event)"
+        />
+        <button type="button" class="bouton-fermer-recherche" (click)="fermerRechercheMobile()" aria-label="Fermer la recherche">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+
+      <div class="resultats-recherche-mobile">
+        @if (rechercheEnCours()) {
+          <div class="resultat-etat">Recherche…</div>
+        } @else if (valeurRecherche().trim().length < 2) {
+          <div class="resultat-etat">Tapez au moins 2 caractères…</div>
+        } @else if (resultatsRecherche().length === 0) {
+          <div class="resultat-etat">Aucun résultat.</div>
+        } @else {
+          @for (resultat of resultatsRecherche(); track resultat.type + resultat.id; let i = $index) {
+            <button
+              type="button"
+              class="ligne-resultat"
+              [class.ligne-surlignee]="i === indexSurligne()"
+              (click)="allerVersResultat(resultat)"
+            >
+              <i class="pi" [ngClass]="iconePourType(resultat.type)" aria-hidden="true"></i>
+              <span class="resultat-texte">
+                <span class="resultat-titre">{{ resultat.titre }}</span>
+                <span class="resultat-sous-titre">{{ resultat.sousTitre }}</span>
+              </span>
+            </button>
+          }
+        }
+      </div>
+    </div>
+  }
 </div>

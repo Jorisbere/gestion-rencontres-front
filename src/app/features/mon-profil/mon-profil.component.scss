@@ -1,0 +1,87 @@
+.carte-profil {
+  max-width: 480px;
+  margin-bottom: 24px;
+
+  h2 {
+    font-size: 16px;
+  }
+}
+
+.entete-avatar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.nom-affiche {
+  display: block;
+  font-family: var(--font-titres);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.role-affiche {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.formulaire-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+}
+
+:host ::ng-deep {
+  input.p-inputtext,
+  .p-password input {
+    width: 100%;
+    height: 42px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-corps);
+  }
+
+  .p-password {
+    width: 100%;
+  }
+
+  .bouton-pleine-largeur {
+    width: 100%;
+    margin-top: 4px;
+
+    .p-button {
+      width: 100%;
+      justify-content: center;
+      height: 44px;
+      font-family: var(--font-titres);
+      font-weight: 600;
+    }
+  }
+}
+
+.aide-champ {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.erreur-champ {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--danger);
+}

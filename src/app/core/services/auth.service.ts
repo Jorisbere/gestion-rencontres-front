@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, UtilisateurConnecte } from '../models/auth.model';
+import { LoginRequest, LoginResponse, RegisterRequest, UtilisateurConnecte } from '../models/auth.model';
+import { Utilisateur } from '../models/utilisateur.model';
 
 const CLE_TOKEN = 'gr_token';
 const CLE_UTILISATEUR = 'gr_utilisateur';
@@ -27,6 +28,11 @@ export class AuthService {
     );
   }
 
+  /** Auto-inscription "Créer compte" (acteur Agent) — ne connecte pas automatiquement. */
+  inscrire(dto: RegisterRequest): Observable<Utilisateur> {
+    return this.http.post<Utilisateur>(`${environment.apiUrl}/auth/register`, dto);
+  }
+
   deconnecter(): void {
     localStorage.removeItem(CLE_TOKEN);
     localStorage.removeItem(CLE_UTILISATEUR);
@@ -36,6 +42,22 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem(CLE_TOKEN);
+  }
+
+  /** Décode la revendication "exp" du JWT courant, sans validation de signature (déjà
+   * garantie côté back) — uniquement pour anticiper l'expiration côté UI. */
+  dateExpirationToken(): Date | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const charge = token.split('.')[1];
+      const normalise = charge.replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(atob(normalise)) as { exp?: number };
+      return payload.exp ? new Date(payload.exp * 1000) : null;
+    } catch {
+      return null;
+    }
   }
 
   aLeRole(...roles: Array<UtilisateurConnecte['role']>): boolean {

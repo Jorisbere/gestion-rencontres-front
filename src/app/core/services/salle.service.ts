@@ -14,8 +14,16 @@ export class SalleService {
     return this.http.get<Salle[]>(url);
   }
 
+  getDetail(id: number): Observable<Salle> {
+    return this.http.get<Salle>(`${this.baseUrl}/${id}`);
+  }
+
   creer(dto: SalleRequest): Observable<Salle> {
     return this.http.post<Salle>(this.baseUrl, dto);
+  }
+
+  modifier(id: number, dto: SalleRequest): Observable<Salle> {
+    return this.http.put<Salle>(`${this.baseUrl}/${id}`, dto);
   }
 
   desactiver(id: number): Observable<Salle> {

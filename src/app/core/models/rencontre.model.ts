@@ -8,6 +8,9 @@ export interface RencontreRequest {
   dateDebut: string;
   dateFin: string;
   salleId: number;
+  capacitePrevue: number;
+  /** Facultatif : Agent demandeur si différent de l'organisateur connecté. */
+  initiateurId: number | null;
   description: string | null;
 }
 
@@ -20,8 +23,11 @@ export interface Rencontre {
   dateFin: string;
   salleId: number;
   salleNom: string;
+  capacitePrevue: number;
   organisateurId: number;
   organisateurNomComplet: string;
+  initiateurId: number;
+  initiateurNomComplet: string;
   description: string | null;
   dateCreation: string;
   dateModification: string;

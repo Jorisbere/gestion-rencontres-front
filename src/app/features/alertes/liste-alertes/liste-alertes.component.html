@@ -18,11 +18,11 @@
     <p-table [value]="alertes()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th>Type</th>
-          <th>Niveau</th>
+          <th pSortableColumn="type">Type <p-sortIcon field="type" /> <p-columnFilter type="text" field="type" display="menu" /></th>
+          <th pSortableColumn="niveau">Niveau <p-sortIcon field="niveau" /> <p-columnFilter type="text" field="niveau" display="menu" /></th>
           <th>Concerne</th>
-          <th>Message</th>
-          <th>Créée le</th>
+          <th pSortableColumn="message">Message <p-sortIcon field="message" /> <p-columnFilter type="text" field="message" display="menu" /></th>
+          <th pSortableColumn="dateCreation">Créée le <p-sortIcon field="dateCreation" /></th>
           <th></th>
         </tr>
       </ng-template>

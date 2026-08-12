@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 import { SalleService } from '../../../core/services/salle.service';
 
 @Component({
@@ -16,6 +17,7 @@ export class CreerSalleComponent {
   private readonly fb = inject(FormBuilder);
   private readonly salleService = inject(SalleService);
   private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
 
   readonly enCours = signal(false);
   readonly messageErreur = signal<string | null>(null);
@@ -41,8 +43,9 @@ export class CreerSalleComponent {
       capacite: valeurs.capacite!,
       localisation: valeurs.localisation || null
     }).subscribe({
-      next: () => {
+      next: (creee) => {
         this.enCours.set(false);
+        this.messageService.add({ severity: 'success', summary: 'Salle ajoutée', detail: creee.nom });
         this.router.navigate(['/salles']);
       },
       error: (erreur: HttpErrorResponse) => {

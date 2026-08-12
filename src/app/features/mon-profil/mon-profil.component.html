@@ -1,0 +1,92 @@
+<div class="page-etroite">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Mon compte</p>
+      <h1>Mon profil</h1>
+    </div>
+  </div>
+
+  @if (chargement()) {
+    <p>Chargement…</p>
+  } @else {
+    <!-- ---------- Informations personnelles ---------- -->
+    <div class="carte carte-profil">
+      <div class="entete-avatar">
+        <p-avatar [label]="initiales()" size="xlarge" shape="circle" [style]="{ 'background-color': couleurAvatar(), color: '#ffffff' }" />
+        <div>
+          <span class="nom-affiche">{{ utilisateur()?.prenom }} {{ utilisateur()?.nom }}</span>
+          <span class="role-affiche">{{ utilisateur()?.role }}</span>
+        </div>
+      </div>
+
+      <form [formGroup]="formulaireProfil" (ngSubmit)="soumettreProfil()" class="formulaire-vertical">
+        <div class="champ">
+          <label for="nom">Nom</label>
+          <input pInputText id="nom" type="text" formControlName="nom" />
+        </div>
+
+        <div class="champ">
+          <label for="prenom">Prénom</label>
+          <input pInputText id="prenom" type="text" formControlName="prenom" />
+        </div>
+
+        <div class="champ">
+          <label>Email</label>
+          <input pInputText type="email" [value]="utilisateur()?.email" disabled />
+        </div>
+
+        <div class="champ">
+          <label>Rôle</label>
+          <input pInputText type="text" [value]="utilisateur()?.role" disabled />
+        </div>
+
+        @if (messageErreurProfil()) {
+          <p class="message-erreur">{{ messageErreurProfil() }}</p>
+        }
+        @if (messageSuccesProfil()) {
+          <p class="message-succes">{{ messageSuccesProfil() }}</p>
+        }
+
+        <p-button type="submit" label="Enregistrer" [loading]="enCoursProfil()" styleClass="bouton-pleine-largeur" />
+      </form>
+    </div>
+
+    <!-- ---------- Mot de passe ---------- -->
+    <div class="carte carte-profil">
+      <h2>Changer le mot de passe</h2>
+
+      <form [formGroup]="formulaireMotDePasse" (ngSubmit)="soumettreMotDePasse()" class="formulaire-vertical">
+        <div class="champ">
+          <label for="ancienMotDePasse">Mot de passe actuel</label>
+          <p-password id="ancienMotDePasse" formControlName="ancienMotDePasse" [feedback]="false" [toggleMask]="true" autocomplete="current-password" />
+        </div>
+
+        <div class="champ">
+          <label for="nouveauMotDePasse">Nouveau mot de passe</label>
+          <p-password id="nouveauMotDePasse" formControlName="nouveauMotDePasse" [toggleMask]="true" autocomplete="new-password" />
+          @if (formulaireMotDePasse.get('nouveauMotDePasse')?.invalid && formulaireMotDePasse.get('nouveauMotDePasse')?.touched) {
+            <span class="erreur-champ">8 caractères minimum</span>
+          }
+        </div>
+
+        <div class="champ">
+          <label for="confirmation">Confirmer le nouveau mot de passe</label>
+          <p-password id="confirmation" formControlName="confirmation" [feedback]="false" [toggleMask]="true" autocomplete="new-password" />
+          @if (formulaireMotDePasse.errors?.['motsDifferents'] && formulaireMotDePasse.get('confirmation')?.touched) {
+            <span class="erreur-champ">Les mots de passe ne correspondent pas</span>
+          }
+        </div>
+
+        @if (messageErreurMotDePasse()) {
+          <p class="message-erreur">{{ messageErreurMotDePasse() }}</p>
+        }
+        @if (messageSuccesMotDePasse()) {
+          <p class="message-succes">{{ messageSuccesMotDePasse() }}</p>
+        }
+
+        <p-button type="submit" label="Changer le mot de passe" [loading]="enCoursMotDePasse()"
+                  [disabled]="formulaireMotDePasse.invalid" styleClass="bouton-pleine-largeur" severity="secondary" />
+      </form>
+    </div>
+  }
+</div>

@@ -1,0 +1,40 @@
+<div class="page-etroite formulaire-carte">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Agents</p>
+      <h1>Modifier l'agent</h1>
+    </div>
+  </div>
+
+  @if (chargement()) {
+    <p>Chargement…</p>
+  } @else {
+    <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
+      <label for="nom">Nom</label>
+      <input id="nom" type="text" formControlName="nom" />
+
+      <label for="prenom">Prénom</label>
+      <input id="prenom" type="text" formControlName="prenom" />
+
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+
+      <label for="telephone">Téléphone</label>
+      <input id="telephone" type="tel" formControlName="telephone" />
+
+      <label for="fonction">Fonction</label>
+      <input id="fonction" type="text" formControlName="fonction" />
+
+      @if (messageErreur()) {
+        <p class="message-erreur">{{ messageErreur() }}</p>
+      }
+
+      <div class="actions-formulaire">
+        <button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Enregistrement…' : 'Enregistrer les modifications' }}
+        </button>
+        <a routerLink="/agents" class="lien-annuler">Annuler</a>
+      </div>
+    </form>
+  }
+</div>

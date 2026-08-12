@@ -1,4 +1,5 @@
 <div class="page">
+<p-confirmpopup />
   <a routerLink="/rencontres" class="lien-discret lien-retour">
     <i class="pi pi-arrow-left"></i> Retour à la liste
   </a>
@@ -18,8 +19,9 @@
 
       @if (transitionsDisponibles().length > 0) {
         <div class="actions-statut">
+          <a [routerLink]="['/rencontres', r.id, 'modifier']" class="bouton-mini">Modifier</a>
           @for (statut of transitionsDisponibles(); track statut) {
-            <button class="bouton-mini" (click)="changerStatut(statut)" [disabled]="enCoursTransition()">
+            <button class="bouton-mini" (click)="demanderConfirmationStatut($event, statut)" [disabled]="enCoursTransition()">
               {{ libelleAction(statut) }}
             </button>
           }
@@ -31,7 +33,11 @@
 
     <dl class="grille-details">
       <div><dt>Salle</dt><dd>{{ r.salleNom }}</dd></div>
+      <div><dt>Capacité prévue</dt><dd>{{ r.capacitePrevue }}</dd></div>
       <div><dt>Organisateur</dt><dd>{{ r.organisateurNomComplet }}</dd></div>
+      @if (r.initiateurId !== r.organisateurId) {
+        <div><dt>Initiateur</dt><dd>{{ r.initiateurNomComplet }}</dd></div>
+      }
       <div><dt>Début</dt><dd>{{ r.dateDebut | date: 'dd/MM/yyyy HH:mm' }}</dd></div>
       <div><dt>Fin</dt><dd>{{ r.dateFin | date: 'dd/MM/yyyy HH:mm' }}</dd></div>
       @if (r.description) {
@@ -43,19 +49,54 @@
       <p class="message-erreur">{{ erreur() }}</p>
     }
 
+    <!-- ---------- États périodiques (EF5) ---------- -->
+    <section class="section-bloc">
+      <h2><i class="pi pi-file-pdf"></i> États périodiques</h2>
+
+      <div class="grille-etats">
+        @for (etat of etatsDisponibles; track etat.type) {
+          <button class="carte-etat" (click)="telechargerEtat(etat.type)" [disabled]="etatEnCours() !== null">
+            <i class="pi" [ngClass]="etatEnCours() === etat.type ? 'pi-spin pi-spinner' : etat.icone"></i>
+            <span>{{ etat.libelle }}</span>
+          </button>
+        }
+      </div>
+
+      <label class="case-archivage">
+        <input type="checkbox" [ngModel]="archiverEtat()" (ngModelChange)="archiverEtat.set($event)" />
+        Archiver automatiquement le document généré dans la liste des documents
+      </label>
+
+      @if (erreurEtat()) {
+        <p class="message-erreur">{{ erreurEtat() }}</p>
+      }
+    </section>
+
     <!-- ---------- Inscriptions ---------- -->
     <section class="section-bloc">
       <h2><i class="pi pi-users"></i> Participants inscrits ({{ inscriptions().length }})</h2>
 
       <div class="barre-ajout">
-        <select [ngModel]="participantSelectionne()" (ngModelChange)="participantSelectionne.set($event)">
-          <option value="">Sélectionner un participant</option>
-          @for (participant of participants(); track participant.id) {
-            <option [value]="participant.id">{{ participant.prenom }} {{ participant.nom }} ({{ participant.email }})</option>
+        <select [ngModel]="inviteSelectionne()" (ngModelChange)="inviteSelectionne.set($event)">
+          <option value="">Sélectionner un invité</option>
+          @for (invite of invites(); track invite.id) {
+            <option [value]="invite.id">{{ invite.libelle }} ({{ invite.email }})</option>
           }
         </select>
-        <button class="bouton-principal" (click)="inscrireParticipant()" [disabled]="inscriptionEnCours() || !participantSelectionne()">
+        <button class="bouton-principal" (click)="inscrireInvite()" [disabled]="inscriptionEnCours() || !inviteSelectionne()">
           <i class="pi pi-plus"></i> Inscrire
+        </button>
+      </div>
+
+      <div class="barre-ajout">
+        <select [ngModel]="agentSelectionne()" (ngModelChange)="agentSelectionne.set($event)">
+          <option value="">Sélectionner un agent ASN</option>
+          @for (agent of agents(); track agent.id) {
+            <option [value]="agent.id">{{ agent.prenom }} {{ agent.nom }} ({{ agent.email }})</option>
+          }
+        </select>
+        <button class="bouton-principal" (click)="inscrireAgent()" [disabled]="inscriptionEnCours() || !agentSelectionne()">
+          <i class="pi pi-plus"></i> Inscrire un agent
         </button>
       </div>
 
@@ -80,7 +121,7 @@
                       <button class="bouton-mini" (click)="changerPresence(inscription, statut)">{{ libelleActionPresence(statut) }}</button>
                     }
                   } @else if (transitionsPresenceDisponibles(inscription).includes('ANNULE')) {
-                    <button class="bouton-mini mini-danger" (click)="annulerInscription(inscription)">Annuler</button>
+                    <button class="bouton-mini mini-danger" (click)="demanderConfirmationAnnulationInscription($event, inscription)">Annuler</button>
                   }
                 </td>
               </tr>
@@ -128,7 +169,7 @@
                 <td>{{ doc.dateDepot | date: 'dd/MM/yy HH:mm' }}</td>
                 <td class="actions-ligne">
                   <button class="bouton-mini" (click)="telechargerDocument(doc)"><i class="pi pi-download"></i></button>
-                  <button class="bouton-mini mini-danger" (click)="supprimerDocument(doc)"><i class="pi pi-trash"></i></button>
+                  <button class="bouton-mini mini-danger" (click)="demanderConfirmationSuppressionDocument($event, doc)"><i class="pi pi-trash"></i></button>
                 </td>
               </tr>
             } @empty {
@@ -164,7 +205,7 @@
       <div class="carte-tableau">
         <table class="tableau-simple">
           <thead>
-            <tr><th>Référence</th><th>Sens</th><th>Objet</th><th>Statut</th><th></th></tr>
+            <tr><th>Référence</th><th>Sens</th><th>Objet</th><th>Statut</th><th>Dernier changement</th><th></th></tr>
           </thead>
           <tbody>
             @for (courrier of courriers(); track courrier.id) {
@@ -178,26 +219,21 @@
                     <span class="pastille pastille-danger">En retard</span>
                   }
                 </td>
+                <td>
+                  @if (courrier.dernierStatutModifiePar) {
+                    {{ courrier.dernierStatutModifiePar }} le {{ courrier.dateDernierChangementStatut | date: 'dd/MM/yy HH:mm' }}
+                  } @else {
+                    —
+                  }
+                </td>
                 <td class="actions-ligne">
                   @if (peutGererCourrier() && prochainStatut(courrier)) {
                     <button class="bouton-mini" (click)="avancerStatut(courrier)">→ {{ prochainStatut(courrier) }}</button>
                   }
-                  <button class="bouton-mini" (click)="basculerHistorique(courrier)">Historique</button>
                 </td>
               </tr>
-              @if (historiqueOuvert() === courrier.id) {
-                <tr>
-                  <td colspan="5">
-                    <ul class="liste-historique">
-                      @for (entree of historique(); track entree.id) {
-                        <li>{{ entree.ancienStatut || 'Création' }} → {{ entree.nouveauStatut }} par {{ entree.auteur }} le {{ entree.dateChangement | date: 'dd/MM/yy HH:mm' }}</li>
-                      }
-                    </ul>
-                  </td>
-                </tr>
-              }
             } @empty {
-              <tr><td colspan="5"><div class="etat-vide"><i class="pi pi-envelope"></i><p>Aucun courrier enregistré.</p></div></td></tr>
+              <tr><td colspan="6"><div class="etat-vide"><i class="pi pi-envelope"></i><p>Aucun courrier enregistré.</p></div></td></tr>
             }
           </tbody>
         </table>

@@ -1,0 +1,100 @@
+<div class="page">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Espace personnel</p>
+      <h1>Mes inscriptions</h1>
+    </div>
+  </div>
+
+  @if (erreur()) {
+    <p class="message-erreur">{{ erreur() }}</p>
+  }
+
+  <h2 class="titre-section">À venir</h2>
+  <div class="carte-tableau">
+    <p-table [value]="aVenir()" [loading]="chargement()" [rowHover]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Rencontre</th>
+          <th>Type</th>
+          <th>Salle</th>
+          <th>Début</th>
+          <th>Statut rencontre</th>
+          <th>Ma présence</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-inscription>
+        <tr>
+          <td class="cellule-titre">{{ inscription.rencontreTitre }}</td>
+          <td>{{ inscription.rencontreType }}</td>
+          <td>{{ inscription.salleNom }}</td>
+          <td>{{ inscription.dateDebut | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span class="pastille" [ngClass]="classeStatutRencontre(inscription.rencontreStatut)">
+              {{ inscription.rencontreStatut }}
+            </span>
+          </td>
+          <td>
+            <span class="pastille" [ngClass]="classePresence(inscription.statutPresence)">
+              {{ inscription.statutPresence }}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6">
+            <div class="etat-vide">
+              <i class="pi pi-calendar"></i>
+              <p>Aucune rencontre à venir pour le moment.</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <h2 class="titre-section">Passées</h2>
+  <div class="carte-tableau">
+    <p-table [value]="passees()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Rencontre</th>
+          <th>Type</th>
+          <th>Salle</th>
+          <th>Début</th>
+          <th>Statut rencontre</th>
+          <th>Ma présence</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-inscription>
+        <tr>
+          <td class="cellule-titre">{{ inscription.rencontreTitre }}</td>
+          <td>{{ inscription.rencontreType }}</td>
+          <td>{{ inscription.salleNom }}</td>
+          <td>{{ inscription.dateDebut | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span class="pastille" [ngClass]="classeStatutRencontre(inscription.rencontreStatut)">
+              {{ inscription.rencontreStatut }}
+            </span>
+          </td>
+          <td>
+            <span class="pastille" [ngClass]="classePresence(inscription.statutPresence)">
+              {{ inscription.statutPresence }}
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6">
+            <div class="etat-vide">
+              <i class="pi pi-history"></i>
+              <p>Aucune rencontre passée.</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

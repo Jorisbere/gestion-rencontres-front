@@ -1,0 +1,41 @@
+.fil-ariane {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  font-size: 12.5px;
+}
+
+.crumb-accueil {
+  display: flex;
+  align-items: center;
+  color: var(--ink-soft);
+  text-decoration: none;
+
+  i { font-size: 13px; }
+
+  &:hover {
+    color: var(--ocean);
+  }
+}
+
+.crumb-separateur {
+  font-size: 9px;
+  color: var(--mist);
+}
+
+.crumb-lien {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    color: var(--ocean);
+    text-decoration: underline;
+  }
+}
+
+.crumb-actuel {
+  color: var(--ink);
+  font-weight: 600;
+}

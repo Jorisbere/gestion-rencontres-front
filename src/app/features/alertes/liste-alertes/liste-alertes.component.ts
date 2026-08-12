@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
+import { MessageService } from 'primeng/api';
 import { AlerteService } from '../../../core/services/alerte.service';
 import { Alerte, NiveauAlerte } from '../../../core/models/alerte.model';
 
@@ -14,6 +15,7 @@ import { Alerte, NiveauAlerte } from '../../../core/models/alerte.model';
 })
 export class ListeAlertesComponent implements OnInit {
   private readonly alerteService = inject(AlerteService);
+  private readonly messageService = inject(MessageService);
 
   readonly alertes = signal<Alerte[]>([]);
   readonly chargement = signal(true);
@@ -46,7 +48,10 @@ export class ListeAlertesComponent implements OnInit {
 
   traiter(alerte: Alerte): void {
     this.alerteService.traiter(alerte.id).subscribe({
-      next: () => this.charger(),
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Alerte traitée', detail: alerte.message });
+        this.charger();
+      },
       error: () => this.erreur.set("Impossible de marquer cette alerte comme traitée.")
     });
   }

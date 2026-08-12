@@ -1,8 +1,8 @@
 <div class="page-etroite formulaire-carte">
   <div class="entete-page">
     <div>
-      <p class="eyebrow">Participants</p>
-      <h1>Ajouter un participant</h1>
+      <p class="eyebrow">Agents</p>
+      <h1>Ajouter un agent</h1>
     </div>
   </div>
 
@@ -14,13 +14,13 @@
     <input id="prenom" type="text" formControlName="prenom" />
 
     <label for="email">Email</label>
-    <input id="email" type="email" formControlName="email" placeholder="prenom.nom@exemple.com" />
+    <input id="email" type="email" formControlName="email" placeholder="prenom.nom@asn-technology.bf" />
 
     <label for="telephone">Téléphone</label>
     <input id="telephone" type="tel" formControlName="telephone" />
 
-    <label for="organisation">Organisation</label>
-    <input id="organisation" type="text" formControlName="organisation" />
+    <label for="fonction">Fonction</label>
+    <input id="fonction" type="text" formControlName="fonction" placeholder="Directeur Général" />
 
     @if (messageErreur()) {
       <p class="message-erreur">{{ messageErreur() }}</p>
@@ -28,9 +28,9 @@
 
     <div class="actions-formulaire">
       <button type="submit" [disabled]="enCours()">
-        {{ enCours() ? 'Ajout…' : 'Ajouter le participant' }}
+        {{ enCours() ? 'Ajout…' : "Ajouter l'agent" }}
       </button>
-      <a routerLink="/participants" class="lien-annuler">Annuler</a>
+      <a routerLink="/agents" class="lien-annuler">Annuler</a>
     </div>
   </form>
 </div>

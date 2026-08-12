@@ -1,0 +1,68 @@
+<div class="page-etroite formulaire-carte">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Invités</p>
+      <h1>Ajouter un invité</h1>
+    </div>
+  </div>
+
+  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
+    <label for="typeParticipant">Type</label>
+    <select id="typeParticipant" formControlName="typeParticipant">
+      <option value="PHYSIQUE">Personne physique</option>
+      <option value="STRUCTURE">Structure</option>
+    </select>
+
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" placeholder="prenom.nom@exemple.com" />
+
+    <label for="contact">Contact (téléphone)</label>
+    <input id="contact" type="tel" formControlName="contact" />
+
+    @if (estPhysique()) {
+      <label for="nom">Nom</label>
+      <input id="nom" type="text" formControlName="nom" />
+
+      <label for="prenom">Prénom</label>
+      <input id="prenom" type="text" formControlName="prenom" />
+
+      <label for="fonction">Fonction</label>
+      <input id="fonction" type="text" formControlName="fonction" />
+
+      <label for="structureAffiliation">Structure d'affiliation</label>
+      <input id="structureAffiliation" type="text" formControlName="structureAffiliation" />
+
+      <label for="agentId">Agent interne lié (facultatif)</label>
+      <select id="agentId" formControlName="agentId">
+        <option value="">Aucun (invité externe)</option>
+        @for (agent of agents(); track agent.id) {
+          <option [value]="agent.id">{{ agent.prenom }} {{ agent.nom }}</option>
+        }
+      </select>
+      <span class="erreur-champ">
+        À renseigner si cette personne est en réalité un agent ASN : lui permet de voir cette
+        rencontre dans son espace "Mes inscriptions" une fois connecté.
+      </span>
+    } @else {
+      <label for="nomStructure">Nom de la structure</label>
+      <input id="nomStructure" type="text" formControlName="nomStructure" />
+
+      <label for="secteurActivite">Secteur d'activité</label>
+      <input id="secteurActivite" type="text" formControlName="secteurActivite" />
+
+      <label for="contactPrincipal">Contact principal</label>
+      <input id="contactPrincipal" type="text" formControlName="contactPrincipal" />
+    }
+
+    @if (messageErreur()) {
+      <p class="message-erreur">{{ messageErreur() }}</p>
+    }
+
+    <div class="actions-formulaire">
+      <button type="submit" [disabled]="enCours()">
+        {{ enCours() ? 'Ajout…' : "Ajouter l'invité" }}
+      </button>
+      <a routerLink="/invites" class="lien-annuler">Annuler</a>
+    </div>
+  </form>
+</div>

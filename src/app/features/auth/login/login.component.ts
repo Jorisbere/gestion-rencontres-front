@@ -1,13 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -36,7 +36,10 @@ export class LoginComponent {
     this.authService.connecter(this.formulaire.getRawValue() as { email: string; motDePasse: string }).subscribe({
       next: () => {
         this.enCours.set(false);
-        this.router.navigate(['/tableau-de-bord']);
+        // Le rôle AGENT n'a pas accès aux endpoints du tableau de bord ADMIN/ORGANISATEUR/
+        // SECRETARIAT (403 côté back) : on l'amène directement sur son espace personnel.
+        const destination = this.authService.aLeRole('AGENT') ? '/mes-inscriptions' : '/tableau-de-bord';
+        this.router.navigate([destination]);
       },
       error: () => {
         this.enCours.set(false);

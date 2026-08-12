@@ -1,0 +1,56 @@
+<div class="page">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Espace personnel</p>
+      <h1>Mes documents</h1>
+    </div>
+  </div>
+
+  @if (erreur()) {
+    <p class="message-erreur">{{ erreur() }}</p>
+  }
+  @if (erreurTelechargement()) {
+    <p class="message-erreur">{{ erreurTelechargement() }}</p>
+  }
+
+  <div class="carte-tableau">
+    <p-table [value]="documents()" [loading]="chargement()" [paginator]="true" [rows]="15" [rowHover]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Fichier</th>
+          <th>Rencontre</th>
+          <th>Type</th>
+          <th>Taille</th>
+          <th>Déposé par</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-document>
+        <tr>
+          <td class="cellule-titre">{{ document.nomFichier }}</td>
+          <td>{{ document.rencontreTitre }}</td>
+          <td>{{ document.typeDocument }}</td>
+          <td>{{ formaterTaille(document.tailleOctets) }}</td>
+          <td>{{ document.deposeParNomComplet }}</td>
+          <td>{{ document.dateDepot | date: 'dd/MM/yy HH:mm' }}</td>
+          <td class="actions-ligne">
+            <button class="bouton-mini" (click)="telechargerDocument(document)">
+              <i class="pi pi-download"></i>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7">
+            <div class="etat-vide">
+              <i class="pi pi-file"></i>
+              <p>Aucun document te concernant.</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

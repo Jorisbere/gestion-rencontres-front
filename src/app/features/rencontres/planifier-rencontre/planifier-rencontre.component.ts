@@ -3,9 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 import { RencontreService } from '../../../core/services/rencontre.service';
 import { SalleService } from '../../../core/services/salle.service';
+import { AgentService } from '../../../core/services/agent.service';
 import { Salle } from '../../../core/models/salle.model';
+import { Agent } from '../../../core/models/agent.model';
 import { RencontreRequest, TypeRencontre } from '../../../core/models/rencontre.model';
 
 @Component({
@@ -19,10 +22,13 @@ export class PlanifierRencontreComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly rencontreService = inject(RencontreService);
   private readonly salleService = inject(SalleService);
+  private readonly agentService = inject(AgentService);
   private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
 
   readonly typesDisponibles: TypeRencontre[] = ['FORMATION', 'REUNION', 'SEMINAIRE', 'ATELIER'];
   readonly salles = signal<Salle[]>([]);
+  readonly agents = signal<Agent[]>([]);
   readonly enCours = signal(false);
   readonly messageErreur = signal<string | null>(null);
 
@@ -32,12 +38,17 @@ export class PlanifierRencontreComponent implements OnInit {
     dateDebut: ['', Validators.required],
     dateFin: ['', Validators.required],
     salleId: ['', Validators.required],
+    capacitePrevue: ['', [Validators.required, Validators.min(1)]],
+    initiateurId: [''],
     description: ['']
   });
 
   ngOnInit(): void {
     this.salleService.lister(true).subscribe({
       next: (donnees) => this.salles.set(donnees)
+    });
+    this.agentService.lister(true).subscribe({
+      next: (donnees) => this.agents.set(donnees)
     });
   }
 
@@ -57,12 +68,15 @@ export class PlanifierRencontreComponent implements OnInit {
       dateDebut: valeurs.dateDebut!,
       dateFin: valeurs.dateFin!,
       salleId: Number(valeurs.salleId),
+      capacitePrevue: Number(valeurs.capacitePrevue),
+      initiateurId: valeurs.initiateurId ? Number(valeurs.initiateurId) : null,
       description: valeurs.description || null
     };
 
     this.rencontreService.creer(dto).subscribe({
-      next: () => {
+      next: (creee) => {
         this.enCours.set(false);
+        this.messageService.add({ severity: 'success', summary: 'Rencontre planifiée', detail: creee.titre });
         this.router.navigate(['/rencontres']);
       },
       error: (erreur: HttpErrorResponse) => {

@@ -1,4 +1,5 @@
 <div class="page">
+<p-confirmpopup />
   <div class="entete-page">
     <div>
       <p class="eyebrow">Administration</p>
@@ -18,11 +19,11 @@
     <p-table [value]="utilisateurs()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th>Email</th>
-          <th>Rôle</th>
-          <th>Statut</th>
+          <th pSortableColumn="nom">Nom <p-sortIcon field="nom" /> <p-columnFilter type="text" field="nom" display="menu" /></th>
+          <th pSortableColumn="prenom">Prénom <p-sortIcon field="prenom" /> <p-columnFilter type="text" field="prenom" display="menu" /></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email" /> <p-columnFilter type="text" field="email" display="menu" /></th>
+          <th pSortableColumn="role">Rôle <p-sortIcon field="role" /> <p-columnFilter type="text" field="role" display="menu" /></th>
+          <th pSortableColumn="actif">Statut <p-sortIcon field="actif" /></th>
           <th></th>
         </tr>
       </ng-template>
@@ -39,10 +40,11 @@
               {{ utilisateur.actif ? 'Actif' : 'Inactif' }}
             </span>
           </td>
-          <td>
-            <button class="bouton-mini" (click)="basculerActivation(utilisateur)">
+          <td class="actions-ligne">
+            <button class="bouton-mini" (click)="demanderConfirmationActivation($event, utilisateur)">
               {{ utilisateur.actif ? 'Désactiver' : 'Activer' }}
             </button>
+            <a [routerLink]="['/utilisateurs', utilisateur.id, 'modifier']" class="bouton-mini">Modifier</a>
           </td>
         </tr>
       </ng-template>
@@ -52,6 +54,10 @@
             <div class="etat-vide">
               <i class="pi pi-shield"></i>
               <p>Aucun utilisateur enregistré.</p>
+              <a routerLink="/utilisateurs/creer" class="bouton-principal">
+                <i class="pi pi-plus"></i>
+                Créer un utilisateur
+              </a>
             </div>
           </td>
         </tr>

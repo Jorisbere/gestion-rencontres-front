@@ -7,14 +7,18 @@
   </div>
 
   <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
-    <label for="nom">Nom</label>
-    <input id="nom" type="text" formControlName="nom" />
-
-    <label for="prenom">Prénom</label>
-    <input id="prenom" type="text" formControlName="prenom" />
-
-    <label for="email">Email</label>
-    <input id="email" type="email" formControlName="email" placeholder="prenom.nom@asn-technology.bf" />
+    <label for="agentId">Agent</label>
+    <select id="agentId" formControlName="agentId">
+      <option value="" disabled>Sélectionner un agent</option>
+      @for (agent of agentsSansCompte(); track agent.id) {
+        <option [value]="agent.id">{{ agent.prenom }} {{ agent.nom }} ({{ agent.email }})</option>
+      }
+    </select>
+    @if (agentsSansCompte().length === 0) {
+      <span class="erreur-champ">
+        Tous les agents actifs ont déjà un compte. Crée d'abord un agent dans la section Agents.
+      </span>
+    }
 
     <label for="motDePasse">Mot de passe</label>
     <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="new-password" />

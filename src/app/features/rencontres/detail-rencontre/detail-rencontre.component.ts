@@ -2,17 +2,22 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { RencontreService } from '../../../core/services/rencontre.service';
 import { InscriptionService } from '../../../core/services/inscription.service';
-import { ParticipantService } from '../../../core/services/participant.service';
+import { InviteService } from '../../../core/services/invite.service';
+import { AgentService } from '../../../core/services/agent.service';
 import { DocumentService } from '../../../core/services/document.service';
 import { CourrierService } from '../../../core/services/courrier.service';
+import { EtatPeriodiqueService, TypeEtat } from '../../../core/services/etat-periodique.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Rencontre, StatutRencontre } from '../../../core/models/rencontre.model';
 import { Inscription, StatutPresence } from '../../../core/models/inscription.model';
-import { Participant } from '../../../core/models/participant.model';
+import { Invite } from '../../../core/models/invite.model';
+import { Agent } from '../../../core/models/agent.model';
 import { DocumentRencontre, TypeDocument } from '../../../core/models/document.model';
-import { Courrier, CourrierRequest, HistoriqueStatutCourrier, SensCourrier, StatutCourrier } from '../../../core/models/courrier.model';
+import { Courrier, CourrierRequest, SensCourrier, StatutCourrier } from '../../../core/models/courrier.model';
 
 const TRANSITIONS_AUTORISEES: Record<StatutRencontre, StatutRencontre[]> = {
   PLANIFIEE: ['CONFIRMEE', 'ANNULEE'],
@@ -50,7 +55,7 @@ const TRANSITION_SUIVANTE_COURRIER: Record<StatutCourrier, StatutCourrier | null
 @Component({
   selector: 'app-detail-rencontre',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, ConfirmPopupModule],
   templateUrl: './detail-rencontre.component.html',
   styleUrl: './detail-rencontre.component.scss'
 })
@@ -59,9 +64,13 @@ export class DetailRencontreComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly rencontreService = inject(RencontreService);
   private readonly inscriptionService = inject(InscriptionService);
-  private readonly participantService = inject(ParticipantService);
+  private readonly inviteService = inject(InviteService);
+  private readonly agentService = inject(AgentService);
   private readonly documentService = inject(DocumentService);
   private readonly courrierService = inject(CourrierService);
+  private readonly etatPeriodiqueService = inject(EtatPeriodiqueService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
   readonly authService = inject(AuthService);
 
   readonly rencontre = signal<Rencontre | null>(null);
@@ -70,8 +79,10 @@ export class DetailRencontreComponent implements OnInit {
   readonly enCoursTransition = signal(false);
 
   readonly inscriptions = signal<Inscription[]>([]);
-  readonly participants = signal<Participant[]>([]);
-  readonly participantSelectionne = signal<string>('');
+  readonly invites = signal<Invite[]>([]);
+  readonly inviteSelectionne = signal<string>('');
+  readonly agents = signal<Agent[]>([]);
+  readonly agentSelectionne = signal<string>('');
   readonly erreurInscription = signal<string | null>(null);
   readonly inscriptionEnCours = signal(false);
 
@@ -87,8 +98,6 @@ export class DetailRencontreComponent implements OnInit {
   readonly courriers = signal<Courrier[]>([]);
   readonly erreurCourrier = signal<string | null>(null);
   readonly creationCourrierEnCours = signal(false);
-  readonly historiqueOuvert = signal<number | null>(null);
-  readonly historique = signal<HistoriqueStatutCourrier[]>([]);
 
   readonly formulaireCourrier = this.fb.group({
     sens: ['' as SensCourrier | '', Validators.required],
@@ -105,8 +114,20 @@ export class DetailRencontreComponent implements OnInit {
     this.chargerInscriptions();
     this.chargerDocuments();
     this.chargerCourriers();
-    this.participantService.lister().subscribe({
-      next: (donnees) => this.participants.set(donnees)
+    this.chargerInvites();
+    this.chargerAgents();
+  }
+
+  /** Exclut les invités déjà liés à un Agent : celui-ci se sélectionne toujours via "Agent ASN". */
+  private chargerInvites(): void {
+    this.inviteService.lister(true, true).subscribe({
+      next: (donnees) => this.invites.set(donnees)
+    });
+  }
+
+  private chargerAgents(): void {
+    this.agentService.lister(true).subscribe({
+      next: (donnees) => this.agents.set(donnees)
     });
   }
 
@@ -141,13 +162,35 @@ export class DetailRencontreComponent implements OnInit {
     return LIBELLES_ACTION[statut];
   }
 
-  changerStatut(nouveauStatut: StatutRencontre): void {
+  demanderConfirmationStatut(evenement: Event, nouveauStatut: StatutRencontre): void {
+    if (nouveauStatut !== 'ANNULEE') {
+      this.changerStatut(nouveauStatut);
+      return;
+    }
+    this.confirmationService.confirm({
+      target: evenement.target as EventTarget,
+      message: 'Annuler définitivement cette rencontre ? Cette action ne peut pas être défaite.',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Annuler la rencontre',
+      rejectLabel: 'Retour',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      rejectButtonStyleClass: 'p-button-text p-button-sm',
+      accept: () => this.changerStatut(nouveauStatut)
+    });
+  }
+
+  private changerStatut(nouveauStatut: StatutRencontre): void {
     this.enCoursTransition.set(true);
     this.erreur.set(null);
     this.rencontreService.changerStatut(this.rencontreId, nouveauStatut).subscribe({
       next: (miseAJour) => {
         this.rencontre.set(miseAJour);
         this.enCoursTransition.set(false);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Statut mis à jour',
+          detail: `Rencontre : ${LIBELLES_ACTION[nouveauStatut]}`
+        });
       },
       error: () => {
         this.erreur.set('Impossible de changer le statut.');
@@ -172,8 +215,8 @@ export class DetailRencontreComponent implements OnInit {
     return this.authService.aLeRole('ADMINISTRATEUR', 'SECRETARIAT');
   }
 
-  inscrireParticipant(): void {
-    const id = Number(this.participantSelectionne());
+  inscrireInvite(): void {
+    const id = Number(this.inviteSelectionne());
     if (!id) return;
 
     this.inscriptionEnCours.set(true);
@@ -182,12 +225,39 @@ export class DetailRencontreComponent implements OnInit {
     this.inscriptionService.inscrire(this.rencontreId, id).subscribe({
       next: () => {
         this.inscriptionEnCours.set(false);
-        this.participantSelectionne.set('');
+        this.inviteSelectionne.set('');
+        this.messageService.add({ severity: 'success', summary: 'Invité inscrit', detail: 'Ajouté à la rencontre' });
         this.chargerInscriptions();
       },
       error: (erreur) => {
         this.inscriptionEnCours.set(false);
-        this.erreurInscription.set(erreur.error?.message ?? "Impossible d'inscrire ce participant.");
+        this.erreurInscription.set(erreur.error?.message ?? "Impossible d'inscrire cet invité.");
+      }
+    });
+  }
+
+  /**
+   * Inscrit directement un Agent ASN : le backend crée ou réutilise automatiquement la
+   * fiche Invité liée. Un agent reste toujours sélectionnable ici (liste stable, non
+   * filtrée) — le sélecteur "Invité" exclut en retour les invités déjà liés à un agent.
+   */
+  inscrireAgent(): void {
+    const id = Number(this.agentSelectionne());
+    if (!id) return;
+
+    this.inscriptionEnCours.set(true);
+    this.erreurInscription.set(null);
+
+    this.inscriptionService.inscrireAgent(this.rencontreId, id).subscribe({
+      next: () => {
+        this.inscriptionEnCours.set(false);
+        this.agentSelectionne.set('');
+        this.messageService.add({ severity: 'success', summary: 'Agent inscrit', detail: 'Ajouté à la rencontre' });
+        this.chargerInscriptions();
+      },
+      error: (erreur) => {
+        this.inscriptionEnCours.set(false);
+        this.erreurInscription.set(erreur.error?.message ?? "Impossible d'inscrire cet agent.");
       }
     });
   }
@@ -209,17 +279,44 @@ export class DetailRencontreComponent implements OnInit {
   changerPresence(inscription: Inscription, statut: StatutPresence): void {
     this.erreurInscription.set(null);
     this.inscriptionService.changerStatutPresence(this.rencontreId, inscription.id, statut).subscribe({
-      next: () => this.chargerInscriptions(),
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.libelleActionPresence(statut),
+          detail: inscription.participantNomComplet
+        });
+        this.chargerInscriptions();
+      },
       error: (erreur) => {
         this.erreurInscription.set(erreur.error?.message ?? 'Impossible de changer le statut de présence.');
       }
     });
   }
 
-  annulerInscription(inscription: Inscription): void {
+  demanderConfirmationAnnulationInscription(evenement: Event, inscription: Inscription): void {
+    this.confirmationService.confirm({
+      target: evenement.target as EventTarget,
+      message: `Annuler l'inscription de ${inscription.participantNomComplet} ?`,
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Annuler l\'inscription',
+      rejectLabel: 'Retour',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      rejectButtonStyleClass: 'p-button-text p-button-sm',
+      accept: () => this.annulerInscription(inscription)
+    });
+  }
+
+  private annulerInscription(inscription: Inscription): void {
     this.erreurInscription.set(null);
     this.inscriptionService.annuler(this.rencontreId, inscription.id).subscribe({
-      next: () => this.chargerInscriptions(),
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Inscription annulée',
+          detail: inscription.participantNomComplet
+        });
+        this.chargerInscriptions();
+      },
       error: () => this.erreurInscription.set("Impossible d'annuler cette inscription.")
     });
   }
@@ -284,6 +381,7 @@ export class DetailRencontreComponent implements OnInit {
         this.depotEnCours.set(false);
         this.fichierSelectionne.set(null);
         this.typeDocumentSelectionne.set('');
+        this.messageService.add({ severity: 'success', summary: 'Document déposé', detail: fichier.name });
         this.chargerDocuments();
       },
       error: (erreur) => {
@@ -307,9 +405,25 @@ export class DetailRencontreComponent implements OnInit {
     });
   }
 
-  supprimerDocument(document: DocumentRencontre): void {
+  demanderConfirmationSuppressionDocument(evenement: Event, document: DocumentRencontre): void {
+    this.confirmationService.confirm({
+      target: evenement.target as EventTarget,
+      message: `Supprimer définitivement « ${document.nomFichier} » ? Cette action ne peut pas être défaite.`,
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Supprimer',
+      rejectLabel: 'Annuler',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      rejectButtonStyleClass: 'p-button-text p-button-sm',
+      accept: () => this.supprimerDocument(document)
+    });
+  }
+
+  private supprimerDocument(document: DocumentRencontre): void {
     this.documentService.supprimer(this.rencontreId, document.id).subscribe({
-      next: () => this.chargerDocuments(),
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Document supprimé', detail: document.nomFichier });
+        this.chargerDocuments();
+      },
       error: () => this.erreurDocument.set('Impossible de supprimer ce document.')
     });
   }
@@ -351,9 +465,10 @@ export class DetailRencontreComponent implements OnInit {
     };
 
     this.courrierService.creer(this.rencontreId, dto).subscribe({
-      next: () => {
+      next: (cree) => {
         this.creationCourrierEnCours.set(false);
         this.formulaireCourrier.reset();
+        this.messageService.add({ severity: 'success', summary: 'Courrier enregistré', detail: cree.objet });
         this.chargerCourriers();
       },
       error: (erreur) => {
@@ -373,22 +488,12 @@ export class DetailRencontreComponent implements OnInit {
 
     this.erreurCourrier.set(null);
     this.courrierService.changerStatut(this.rencontreId, courrier.id, suivant).subscribe({
-      next: () => this.chargerCourriers(),
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Statut du courrier mis à jour', detail: courrier.objet });
+        this.chargerCourriers();
+      },
       error: (erreur) => {
         this.erreurCourrier.set(erreur.error?.message ?? 'Impossible de changer le statut.');
-      }
-    });
-  }
-
-  basculerHistorique(courrier: Courrier): void {
-    if (this.historiqueOuvert() === courrier.id) {
-      this.historiqueOuvert.set(null);
-      return;
-    }
-    this.courrierService.getHistorique(this.rencontreId, courrier.id).subscribe({
-      next: (donnees) => {
-        this.historique.set(donnees);
-        this.historiqueOuvert.set(courrier.id);
       }
     });
   }
@@ -400,5 +505,42 @@ export class DetailRencontreComponent implements OnInit {
       case 'TRAITE': return 'pastille-succes';
       case 'ARCHIVE': return 'pastille-neutre';
     }
+  }
+
+  // ---- États périodiques (EF5) ----
+
+  readonly archiverEtat = signal(false);
+  readonly etatEnCours = signal<TypeEtat | null>(null);
+  readonly erreurEtat = signal<string | null>(null);
+
+  readonly etatsDisponibles: { type: TypeEtat; libelle: string; icone: string }[] = [
+    { type: 'planning', libelle: 'Planning', icone: 'pi-calendar' },
+    { type: 'emargement', libelle: "Fiche d'émargement", icone: 'pi-check-square' },
+    { type: 'bilan', libelle: 'Bilan', icone: 'pi-chart-bar' },
+    { type: 'recapitulatif', libelle: 'Récapitulatif', icone: 'pi-file-pdf' },
+  ];
+
+  telechargerEtat(type: TypeEtat): void {
+    this.etatEnCours.set(type);
+    this.erreurEtat.set(null);
+
+    this.etatPeriodiqueService.genererEtat(this.rencontreId, type, this.archiverEtat()).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const lien = window.document.createElement('a');
+        lien.href = url;
+        lien.download = `${type}_rencontre_${this.rencontreId}.pdf`;
+        lien.click();
+        window.URL.revokeObjectURL(url);
+        this.etatEnCours.set(null);
+        if (this.archiverEtat()) {
+          this.chargerDocuments();
+        }
+      },
+      error: () => {
+        this.etatEnCours.set(null);
+        this.erreurEtat.set(`Impossible de générer ce document.`);
+      }
+    });
   }
 }

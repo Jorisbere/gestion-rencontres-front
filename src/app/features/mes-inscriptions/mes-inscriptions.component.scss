@@ -1,0 +1,10 @@
+.titre-section {
+  font-family: var(--font-titres);
+  font-size: 16px;
+  color: var(--ink);
+  margin: 28px 0 12px;
+
+  &:first-of-type {
+    margin-top: 8px;
+  }
+}

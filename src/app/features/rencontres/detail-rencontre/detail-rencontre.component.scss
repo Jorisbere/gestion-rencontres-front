@@ -126,3 +126,55 @@
 
   li { margin-bottom: 4px; }
 }
+
+.grille-etats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.carte-etat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px;
+  border: 1px solid var(--mist);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  transition: all 0.15s ease;
+
+  i {
+    font-size: 20px;
+    color: var(--ocean);
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--ocean);
+    box-shadow: var(--ombre-carte);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.case-archivage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  cursor: pointer;
+
+  input {
+    width: 15px;
+    height: 15px;
+  }
+}

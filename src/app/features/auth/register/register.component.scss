@@ -1,0 +1,188 @@
+.ecran-connexion {
+  display: flex;
+  min-height: 100vh;
+}
+
+.panneau-marque {
+  flex: 1.1;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, #0F1930 0%, var(--navy) 45%, #24365E 100%);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px;
+
+  .fond-decoratif {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .marque, h1, p {
+    position: relative;
+    z-index: 1;
+  }
+
+  .marque {
+    margin-bottom: 40px;
+  }
+
+  .logo-marque {
+    height: 64px;
+    width: auto;
+    border-radius: 6px;
+  }
+
+  h1 {
+    color: #FFFFFF;
+    font-size: 32px;
+    line-height: 1.25;
+    max-width: 420px;
+    margin: 0 auto 16px;
+  }
+
+  p {
+    color: #AEB8CC;
+    font-size: 15px;
+    max-width: 380px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+}
+
+.panneau-formulaire {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--paper);
+  padding: 32px;
+}
+
+.carte-connexion {
+  width: 100%;
+  max-width: 380px;
+  background-color: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--ombre-flottante);
+  overflow: hidden;
+  border-top: 4px solid var(--gold);
+  display: flex;
+  flex-direction: column;
+  padding: 32px 32px 28px;
+  text-align: center;
+
+  .icone-connexion {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(150deg, var(--ocean) 0%, var(--navy) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+
+    i {
+      font-size: 28px;
+      color: #FFFFFF;
+    }
+  }
+
+  label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 14px 0 6px;
+    text-align: left;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  input {
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid var(--mist);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: var(--font-corps);
+    background-color: var(--surface);
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      border-color: var(--ocean);
+    }
+  }
+
+  .erreur-champ {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--danger);
+    text-align: left;
+  }
+
+  .erreur-generale {
+    margin: 16px 0 0;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    background-color: var(--danger-bg);
+    color: var(--danger);
+    font-size: 13px;
+  }
+
+  button {
+    margin-top: 28px;
+    height: 44px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background-color: var(--ocean);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--font-titres);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background-color: var(--ocean-dark);
+    }
+
+    &:disabled {
+      background-color: var(--mist);
+      color: var(--ink-soft);
+      cursor: not-allowed;
+    }
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  .lien-discret {
+    margin-top: 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 760px) {
+  .ecran-connexion {
+    flex-direction: column;
+  }
+
+  .panneau-marque {
+    padding: 40px 32px;
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+}

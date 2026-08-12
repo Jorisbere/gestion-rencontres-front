@@ -1,0 +1,56 @@
+<div class="page">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Espace personnel</p>
+      <h1>Mes alertes</h1>
+    </div>
+  </div>
+
+  @if (erreur()) {
+    <p class="message-erreur">{{ erreur() }}</p>
+  }
+
+  @if (chargement()) {
+    <p>Chargement…</p>
+  } @else {
+    <h2 class="titre-section">Non traitées ({{ nonTraitees().length }})</h2>
+    <div class="liste-alertes">
+      @for (alerte of nonTraitees(); track alerte.id) {
+        <div class="ligne-alerte" [ngClass]="classeNiveau(alerte.niveau)">
+          <i class="pi" [ngClass]="icone(alerte)"></i>
+          <div class="ligne-corps">
+            <div class="ligne-titre">{{ alerte.rencontreLibelle || alerte.courrierLibelle || 'Alerte' }}</div>
+            <div class="ligne-message">{{ alerte.message }}</div>
+          </div>
+          <span class="pastille" [ngClass]="classeNiveau(alerte.niveau)">{{ alerte.niveau }}</span>
+          <span class="ligne-date">{{ alerte.dateCreation | date: 'dd/MM HH:mm' }}</span>
+        </div>
+      } @empty {
+        <div class="etat-vide">
+          <i class="pi pi-check-circle"></i>
+          <p>Aucune alerte non traitée te concernant.</p>
+        </div>
+      }
+    </div>
+
+    <h2 class="titre-section">Traitées ({{ traitees().length }})</h2>
+    <div class="liste-alertes">
+      @for (alerte of traitees(); track alerte.id) {
+        <div class="ligne-alerte ligne-traitee">
+          <i class="pi pi-check"></i>
+          <div class="ligne-corps">
+            <div class="ligne-titre">{{ alerte.rencontreLibelle || alerte.courrierLibelle || 'Alerte' }}</div>
+            <div class="ligne-message">{{ alerte.message }}</div>
+          </div>
+          <span class="pastille pastille-neutre">Traitée</span>
+          <span class="ligne-date">{{ alerte.dateCreation | date: 'dd/MM HH:mm' }}</span>
+        </div>
+      } @empty {
+        <div class="etat-vide">
+          <i class="pi pi-bell"></i>
+          <p>Aucune alerte traitée.</p>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,3 +1,5 @@
+import { RoleUtilisateur } from './utilisateur.model';
+
 export interface LoginRequest {
   email: string;
   motDePasse: string;
@@ -10,7 +12,7 @@ export interface LoginResponse {
   nom: string;
   prenom: string;
   email: string;
-  role: 'ADMINISTRATEUR' | 'ORGANISATEUR' | 'SECRETARIAT';
+  role: RoleUtilisateur;
   expiration: string;
 }
 
@@ -19,5 +21,11 @@ export interface UtilisateurConnecte {
   nom: string;
   prenom: string;
   email: string;
-  role: 'ADMINISTRATEUR' | 'ORGANISATEUR' | 'SECRETARIAT';
+  role: RoleUtilisateur;
+}
+
+/** Auto-inscription (cas d'usage "Créer compte" porté par l'acteur Agent). */
+export interface RegisterRequest {
+  email: string;
+  motDePasse: string;
 }

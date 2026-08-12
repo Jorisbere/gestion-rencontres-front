@@ -1,0 +1,75 @@
+<div class="page">
+<p-confirmpopup />
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Référentiel</p>
+      <h1>Invités</h1>
+    </div>
+    <div class="actions-entete">
+      <button type="button" class="bouton-secondaire" (click)="exporter()" [disabled]="invites().length === 0">
+        <i class="pi pi-download"></i>
+        Exporter CSV
+      </button>
+      <a routerLink="/invites/creer" class="bouton-principal">
+        <i class="pi pi-plus"></i>
+        Ajouter un invité
+      </a>
+    </div>
+  </div>
+
+  @if (erreur()) {
+    <p class="message-erreur">{{ erreur() }}</p>
+  }
+
+  <div class="carte-tableau">
+    <p-table [value]="invites()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="libelle">Nom / Structure <p-sortIcon field="libelle" /> <p-columnFilter type="text" field="libelle" display="menu" /></th>
+          <th pSortableColumn="typeParticipant">Type <p-sortIcon field="typeParticipant" /></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email" /> <p-columnFilter type="text" field="email" display="menu" /></th>
+          <th>Organisation</th>
+          <th pSortableColumn="contact">Contact <p-sortIcon field="contact" /></th>
+          <th pSortableColumn="actif">Statut <p-sortIcon field="actif" /></th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-invite>
+        <tr>
+          <td class="cellule-titre">{{ invite.libelle }}</td>
+          <td>
+            <span class="pastille pastille-neutre">{{ invite.typeParticipant === 'PHYSIQUE' ? 'Personne' : 'Structure' }}</span>
+          </td>
+          <td>{{ invite.email }}</td>
+          <td>{{ organisationAffichee(invite) }}</td>
+          <td>{{ invite.contact || '—' }}</td>
+          <td>
+            <span class="pastille" [ngClass]="invite.actif ? 'pastille-succes' : 'pastille-danger'">
+              {{ invite.actif ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+          <td class="actions-ligne">
+            <a [routerLink]="['/invites', invite.id, 'modifier']" class="bouton-mini">Modifier</a>
+            <button class="bouton-mini" (click)="demanderConfirmationActivation($event, invite)">
+              {{ invite.actif ? 'Désactiver' : 'Activer' }}
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7">
+            <div class="etat-vide">
+              <i class="pi pi-users"></i>
+              <p>Aucun invité enregistré.</p>
+              <a routerLink="/invites/creer" class="bouton-principal">
+                <i class="pi pi-plus"></i>
+                Ajouter un invité
+              </a>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

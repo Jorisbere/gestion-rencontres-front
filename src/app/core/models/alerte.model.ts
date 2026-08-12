@@ -15,6 +15,7 @@ export interface Alerte {
   message: string;
   statutEnvoi: StatutEnvoi;
   traitee: boolean;
+  canal: string;
   dateCreation: string;
   dateEnvoi: string | null;
   dateTraitement: string | null;

@@ -32,6 +32,10 @@
         <div class="etat-vide">
           <i class="pi pi-calendar-times"></i>
           <p>Aucune rencontre à venir.</p>
+          <a routerLink="/rencontres/planifier" class="bouton-principal">
+            <i class="pi pi-plus"></i>
+            Planifier une rencontre
+          </a>
         </div>
       } @else {
         @for (r of prochainesRencontres(); track r.id) {

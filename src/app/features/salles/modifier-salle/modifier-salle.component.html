@@ -1,0 +1,34 @@
+<div class="page-etroite formulaire-carte">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Salles</p>
+      <h1>Modifier la salle</h1>
+    </div>
+  </div>
+
+  @if (chargement()) {
+    <p>Chargement…</p>
+  } @else {
+    <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
+      <label for="nom">Nom</label>
+      <input id="nom" type="text" formControlName="nom" />
+
+      <label for="capacite">Capacité</label>
+      <input id="capacite" type="number" min="1" formControlName="capacite" />
+
+      <label for="localisation">Localisation</label>
+      <input id="localisation" type="text" formControlName="localisation" />
+
+      @if (messageErreur()) {
+        <p class="message-erreur">{{ messageErreur() }}</p>
+      }
+
+      <div class="actions-formulaire">
+        <button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Enregistrement…' : 'Enregistrer les modifications' }}
+        </button>
+        <a routerLink="/salles" class="lien-annuler">Annuler</a>
+      </div>
+    </form>
+  }
+</div>

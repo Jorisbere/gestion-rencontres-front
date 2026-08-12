@@ -1,0 +1,57 @@
+<div class="page-etroite formulaire-carte">
+  <div class="entete-page">
+    <div>
+      <p class="eyebrow">Rencontres</p>
+      <h1>Modifier la rencontre</h1>
+    </div>
+  </div>
+
+  @if (chargement()) {
+    <p>Chargement…</p>
+  } @else if (nonModifiable()) {
+    <p class="message-erreur">Cette rencontre est terminée ou annulée : elle ne peut plus être modifiée.</p>
+    <a routerLink="/rencontres" class="lien-discret">← Retour à la liste</a>
+  } @else {
+    <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
+      <label for="titre">Titre</label>
+      <input id="titre" type="text" formControlName="titre" />
+
+      <label for="typeRencontre">Type</label>
+      <select id="typeRencontre" formControlName="typeRencontre">
+        @for (type of typesDisponibles; track type) {
+          <option [value]="type">{{ type }}</option>
+        }
+      </select>
+
+      <label for="salleId">Salle</label>
+      <select id="salleId" formControlName="salleId">
+        @for (salle of salles(); track salle.id) {
+          <option [value]="salle.id">{{ salle.nom }} ({{ salle.capacite }} places)</option>
+        }
+      </select>
+
+      <label for="capacitePrevue">Capacité prévue</label>
+      <input id="capacitePrevue" type="number" min="1" formControlName="capacitePrevue" />
+
+      <label for="dateDebut">Date et heure de début</label>
+      <input id="dateDebut" type="datetime-local" formControlName="dateDebut" />
+
+      <label for="dateFin">Date et heure de fin</label>
+      <input id="dateFin" type="datetime-local" formControlName="dateFin" />
+
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description" rows="3"></textarea>
+
+      @if (messageErreur()) {
+        <p class="message-erreur">{{ messageErreur() }}</p>
+      }
+
+      <div class="actions-formulaire">
+        <button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Enregistrement…' : 'Enregistrer les modifications' }}
+        </button>
+        <a [routerLink]="['/rencontres', rencontreId]" class="lien-annuler">Annuler</a>
+      </div>
+    </form>
+  }
+</div>

@@ -1,4 +1,5 @@
 <div class="page">
+<p-confirmpopup />
   <div class="entete-page">
     <div>
       <p class="eyebrow">Gestion des salles</p>
@@ -20,10 +21,10 @@
     <p-table [value]="salles()" [loading]="chargement()" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th>Nom</th>
-          <th>Capacité</th>
-          <th>Localisation</th>
-          <th>Statut</th>
+          <th pSortableColumn="nom">Nom <p-sortIcon field="nom" /> <p-columnFilter type="text" field="nom" display="menu" /></th>
+          <th pSortableColumn="capacite">Capacité <p-sortIcon field="capacite" /></th>
+          <th pSortableColumn="localisation">Localisation <p-sortIcon field="localisation" /> <p-columnFilter type="text" field="localisation" display="menu" /></th>
+          <th pSortableColumn="actif">Statut <p-sortIcon field="actif" /></th>
           @if (authService.aLeRole('ADMINISTRATEUR')) {
             <th></th>
           }
@@ -40,8 +41,9 @@
             </span>
           </td>
           @if (authService.aLeRole('ADMINISTRATEUR')) {
-            <td>
-              <button class="bouton-mini" (click)="basculerActivation(salle)">
+            <td class="actions-ligne">
+              <a [routerLink]="['/salles', salle.id, 'modifier']" class="bouton-mini">Modifier</a>
+              <button class="bouton-mini" (click)="demanderConfirmationActivation($event, salle)">
                 {{ salle.actif ? 'Désactiver' : 'Activer' }}
               </button>
             </td>
@@ -54,6 +56,12 @@
             <div class="etat-vide">
               <i class="pi pi-building"></i>
               <p>Aucune salle enregistrée.</p>
+              @if (authService.aLeRole('ADMINISTRATEUR')) {
+                <a routerLink="/salles/creer" class="bouton-principal">
+                  <i class="pi pi-plus"></i>
+                  Créer une salle
+                </a>
+              }
             </div>
           </td>
         </tr>

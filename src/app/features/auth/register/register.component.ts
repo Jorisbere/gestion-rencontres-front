@@ -3,29 +3,29 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ParticipantService } from '../../../core/services/participant.service';
+import { AuthService } from '../../../core/services/auth.service';
 
+/** Auto-inscription "Créer compte" (cas d'usage acteur Agent, validé le 2026-08-11). */
 @Component({
-  selector: 'app-creer-participant',
+  selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './creer-participant.component.html',
-  styleUrl: './creer-participant.component.scss'
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.scss'
 })
-export class CreerParticipantComponent {
+export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly participantService = inject(ParticipantService);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   readonly enCours = signal(false);
   readonly messageErreur = signal<string | null>(null);
+  readonly succes = signal(false);
 
   readonly formulaire = this.fb.group({
-    nom: ['', Validators.required],
-    prenom: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    telephone: [''],
-    organisation: ['']
+    motDePasse: ['', [Validators.required, Validators.minLength(8)]],
+    confirmation: ['', Validators.required]
   });
 
   soumettre(): void {
@@ -34,20 +34,20 @@ export class CreerParticipantComponent {
       return;
     }
 
+    const v = this.formulaire.getRawValue();
+    if (v.motDePasse !== v.confirmation) {
+      this.messageErreur.set('La confirmation ne correspond pas au mot de passe.');
+      return;
+    }
+
     this.enCours.set(true);
     this.messageErreur.set(null);
 
-    const valeurs = this.formulaire.getRawValue();
-    this.participantService.creer({
-      nom: valeurs.nom!,
-      prenom: valeurs.prenom!,
-      email: valeurs.email!,
-      telephone: valeurs.telephone || null,
-      organisation: valeurs.organisation || null
-    }).subscribe({
+    this.authService.inscrire({ email: v.email!, motDePasse: v.motDePasse! }).subscribe({
       next: () => {
         this.enCours.set(false);
-        this.router.navigate(['/participants']);
+        this.succes.set(true);
+        setTimeout(() => this.router.navigate(['/connexion']), 2000);
       },
       error: (erreur: HttpErrorResponse) => {
         this.enCours.set(false);

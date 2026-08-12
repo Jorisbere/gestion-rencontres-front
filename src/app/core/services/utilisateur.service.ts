@@ -13,6 +13,10 @@ export class UtilisateurService {
     return this.http.get<Utilisateur[]>(this.baseUrl);
   }
 
+  getDetail(id: number): Observable<Utilisateur> {
+    return this.http.get<Utilisateur>(`${this.baseUrl}/${id}`);
+  }
+
   creer(dto: UtilisateurRequest): Observable<Utilisateur> {
     return this.http.post<Utilisateur>(this.baseUrl, dto);
   }

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Courrier, CourrierRequest, HistoriqueStatutCourrier, StatutCourrier } from '../models/courrier.model';
+import { Courrier, CourrierRequest, StatutCourrier } from '../models/courrier.model';
 
 @Injectable({ providedIn: 'root' })
 export class CourrierService {
@@ -24,9 +24,5 @@ export class CourrierService {
     return this.http.patch<Courrier>(
       `${this.baseUrl(rencontreId)}/${courrierId}/statut?statut=${statut}`, {}
     );
-  }
-
-  getHistorique(rencontreId: number, courrierId: number): Observable<HistoriqueStatutCourrier[]> {
-    return this.http.get<HistoriqueStatutCourrier[]>(`${this.baseUrl(rencontreId)}/${courrierId}/historique`);
   }
 }

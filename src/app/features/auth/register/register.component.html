@@ -1,0 +1,61 @@
+<div class="ecran-connexion">
+  <div class="panneau-marque">
+    <svg class="fond-decoratif" viewBox="0 0 480 900" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="-40" y1="120" x2="560" y2="-60" stroke="#4A5B82" stroke-width="1" opacity="0.35"/>
+      <line x1="-40" y1="220" x2="560" y2="40" stroke="#4A5B82" stroke-width="1" opacity="0.35"/>
+      <line x1="-40" y1="320" x2="560" y2="140" stroke="#C99A3B" stroke-width="1.5" opacity="0.5"/>
+      <line x1="-40" y1="420" x2="560" y2="240" stroke="#4A5B82" stroke-width="1" opacity="0.3"/>
+      <line x1="-40" y1="520" x2="560" y2="340" stroke="#4A5B82" stroke-width="1" opacity="0.25"/>
+      <circle cx="440" cy="760" r="110" fill="none" stroke="#C99A3B" stroke-width="1" opacity="0.3"/>
+      <circle cx="440" cy="760" r="160" fill="none" stroke="#5B6E93" stroke-width="1" opacity="0.2"/>
+    </svg>
+
+    <div class="marque">
+      <img src="images/logo-asn-technology.png" alt="ASN Technology" class="logo-marque" />
+    </div>
+    <h1>Créer votre compte</h1>
+    <p>Réservé aux agents déjà enregistrés par un administrateur ASN Technology.</p>
+  </div>
+
+  <div class="panneau-formulaire">
+    @if (succes()) {
+      <div class="carte-connexion">
+        <div class="icone-connexion">
+          <i class="pi pi-check"></i>
+        </div>
+        <p>Compte créé avec succès. Redirection vers la connexion…</p>
+      </div>
+    } @else {
+      <form class="carte-connexion" [formGroup]="formulaire" (ngSubmit)="soumettre()">
+        <div class="icone-connexion">
+          <i class="pi pi-user-plus"></i>
+        </div>
+
+        <label for="email">Email professionnel</label>
+        <input id="email" type="email" formControlName="email" autocomplete="username" placeholder="prenom.nom@asn-technology.bf" />
+        @if (formulaire.get('email')?.invalid && formulaire.get('email')?.touched) {
+          <span class="erreur-champ">Entrez l'adresse email exacte connue de votre fiche agent</span>
+        }
+
+        <label for="motDePasse">Mot de passe</label>
+        <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="new-password" />
+        @if (formulaire.get('motDePasse')?.invalid && formulaire.get('motDePasse')?.touched) {
+          <span class="erreur-champ">8 caractères minimum</span>
+        }
+
+        <label for="confirmation">Confirmation</label>
+        <input id="confirmation" type="password" formControlName="confirmation" autocomplete="new-password" />
+
+        @if (messageErreur()) {
+          <p class="erreur-generale">{{ messageErreur() }}</p>
+        }
+
+        <button type="submit" [disabled]="enCours()">
+          {{ enCours() ? 'Création…' : 'Créer mon compte' }}
+        </button>
+
+        <a routerLink="/connexion" class="lien-discret">← Retour à la connexion</a>
+      </form>
+    }
+  </div>
+</div>

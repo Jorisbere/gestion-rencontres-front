@@ -30,13 +30,13 @@
              styleClass="tableau-rencontres" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th>Titre</th>
-          <th>Type</th>
-          <th>Statut</th>
-          <th>Salle</th>
-          <th>Début</th>
-          <th>Fin</th>
-          <th>Organisateur</th>
+          <th pSortableColumn="titre">Titre <p-sortIcon field="titre" /> <p-columnFilter type="text" field="titre" display="menu" /></th>
+          <th pSortableColumn="typeRencontre">Type <p-sortIcon field="typeRencontre" /> <p-columnFilter type="text" field="typeRencontre" display="menu" /></th>
+          <th pSortableColumn="statut">Statut <p-sortIcon field="statut" /> <p-columnFilter type="text" field="statut" display="menu" /></th>
+          <th pSortableColumn="salleNom">Salle <p-sortIcon field="salleNom" /> <p-columnFilter type="text" field="salleNom" display="menu" /></th>
+          <th pSortableColumn="dateDebut">Début <p-sortIcon field="dateDebut" /></th>
+          <th pSortableColumn="dateFin">Fin <p-sortIcon field="dateFin" /></th>
+          <th pSortableColumn="organisateurNomComplet">Organisateur <p-sortIcon field="organisateurNomComplet" /> <p-columnFilter type="text" field="organisateurNomComplet" display="menu" /></th>
           <th></th>
         </tr>
       </ng-template>
@@ -66,6 +66,10 @@
             <div class="etat-vide">
               <i class="pi pi-calendar-times"></i>
               <p>Aucune rencontre pour ce filtre.</p>
+              <a routerLink="/rencontres/planifier" class="bouton-principal">
+                <i class="pi pi-plus"></i>
+                Planifier une rencontre
+              </a>
             </div>
           </td>
         </tr>

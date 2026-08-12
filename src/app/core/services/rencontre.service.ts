@@ -22,6 +22,10 @@ export class RencontreService {
     return this.http.post<Rencontre>(this.baseUrl, dto);
   }
 
+  modifier(id: number, dto: RencontreRequest): Observable<Rencontre> {
+    return this.http.put<Rencontre>(`${this.baseUrl}/${id}`, dto);
+  }
+
   changerStatut(id: number, nouveauStatut: StatutRencontre): Observable<Rencontre> {
     return this.http.patch<Rencontre>(`${this.baseUrl}/${id}/statut?nouveauStatut=${nouveauStatut}`, {});
   }

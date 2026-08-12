@@ -23,13 +23,7 @@ export interface Courrier {
   dateCreation: string;
   dateModification: string;
   enRetard: boolean;
-}
-
-export interface HistoriqueStatutCourrier {
-  id: number;
-  courrierId: number;
-  ancienStatut: StatutCourrier | null;
-  nouveauStatut: StatutCourrier;
-  auteur: string;
-  dateChangement: string;
+  /** Remplace HistoriqueStatutCourrier (V4) : dernier changement de statut seulement. */
+  dernierStatutModifiePar: string | null;
+  dateDernierChangementStatut: string | null;
 }

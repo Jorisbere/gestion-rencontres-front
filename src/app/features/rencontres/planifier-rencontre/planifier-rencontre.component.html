@@ -26,11 +26,22 @@
       }
     </select>
 
+    <label for="capacitePrevue">Capacité prévue</label>
+    <input id="capacitePrevue" type="number" min="1" formControlName="capacitePrevue" placeholder="Nombre de participants attendus" />
+
     <label for="dateDebut">Date et heure de début</label>
     <input id="dateDebut" type="datetime-local" formControlName="dateDebut" />
 
     <label for="dateFin">Date et heure de fin</label>
     <input id="dateFin" type="datetime-local" formControlName="dateFin" />
+
+    <label for="initiateurId">Initiateur (si différent de toi)</label>
+    <select id="initiateurId" formControlName="initiateurId">
+      <option value="">Toi-même (par défaut)</option>
+      @for (agent of agents(); track agent.id) {
+        <option [value]="agent.id">{{ agent.prenom }} {{ agent.nom }}</option>
+      }
+    </select>
 
     <label for="description">Description</label>
     <textarea id="description" formControlName="description" rows="3"></textarea>

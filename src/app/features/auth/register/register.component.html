@@ -32,19 +32,19 @@
         </div>
 
         <label for="email">Email professionnel</label>
-        <input id="email" type="email" formControlName="email" autocomplete="username" placeholder="prenom.nom@asn-technology.bf" />
+        <input id="email" type="email" formControlName="email" autocomplete="username" placeholder="Saisissez votre email professionnel" />
         @if (formulaire.get('email')?.invalid && formulaire.get('email')?.touched) {
           <span class="erreur-champ">Entrez l'adresse email exacte connue de votre fiche agent</span>
         }
 
         <label for="motDePasse">Mot de passe</label>
-        <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="new-password" />
+        <input id="motDePasse" type="password" formControlName="motDePasse" autocomplete="new-password" placeholder="Saisissez votre mot de passe"/>
         @if (formulaire.get('motDePasse')?.invalid && formulaire.get('motDePasse')?.touched) {
           <span class="erreur-champ">8 caractères minimum</span>
         }
 
         <label for="confirmation">Confirmation</label>
-        <input id="confirmation" type="password" formControlName="confirmation" autocomplete="new-password" />
+        <input id="confirmation" type="password" formControlName="confirmation" autocomplete="new-password" placeholder="Confirmez votre mot de passe"/>
 
         @if (messageErreur()) {
           <p class="erreur-generale">{{ messageErreur() }}</p>
@@ -54,7 +54,9 @@
           {{ enCours() ? 'Création…' : 'Créer mon compte' }}
         </button>
 
-        <a routerLink="/connexion" class="lien-discret">← Retour à la connexion</a>
+        <a routerLink="/connexion" class="lien-retour">
+          <i class="pi pi-arrow-left"></i> Retour à la connexion
+        </a>
       </form>
     }
   </div>

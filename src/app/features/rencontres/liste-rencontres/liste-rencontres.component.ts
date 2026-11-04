@@ -5,11 +5,12 @@ import { RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { RencontreService } from '../../../core/services/rencontre.service';
 import { Rencontre, StatutRencontre } from '../../../core/models/rencontre.model';
+import { FiltresTableauComponent, ColonneFiltrable } from '../../../shared/filtres-tableau/filtres-tableau.component';
 
 @Component({
   selector: 'app-liste-rencontres',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, TableModule],
+  imports: [CommonModule, FormsModule, RouterLink, TableModule, FiltresTableauComponent],
   templateUrl: './liste-rencontres.component.html',
   styleUrl: './liste-rencontres.component.scss'
 })
@@ -23,6 +24,14 @@ export class ListeRencontresComponent implements OnInit {
 
   readonly statutsDisponibles: StatutRencontre[] = [
     'PLANIFIEE', 'CONFIRMEE', 'EN_COURS', 'TERMINEE', 'ANNULEE'
+  ];
+
+  readonly colonnesFiltrables: ColonneFiltrable[] = [
+    { champ: 'titre', libelle: 'Titre' },
+    { champ: 'typeRencontre', libelle: 'Type' },
+    { champ: 'statut', libelle: 'Statut' },
+    { champ: 'salleNom', libelle: 'Salle' },
+    { champ: 'organisateurNomComplet', libelle: 'Organisateur' }
   ];
 
   ngOnInit(): void {
@@ -65,4 +74,5 @@ export class ListeRencontresComponent implements OnInit {
       case 'ANNULEE': return 'Annulée';
     }
   }
+
 }

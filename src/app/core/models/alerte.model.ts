@@ -1,4 +1,10 @@
-export type TypeAlerte = 'CONFLIT_SALLE' | 'RENCONTRE_PROCHE' | 'COURRIER_RETARD';
+export type TypeAlerte =
+  | 'CONFLIT_SALLE'
+  | 'RENCONTRE_PROCHE'
+  | 'COURRIER_RETARD'
+  | 'RENCONTRE_PLANIFIEE'
+  | 'RENCONTRE_ANNULEE'
+  | 'RENCONTRE_MODIFIEE';
 
 export type NiveauAlerte = 'INFO' | 'ATTENTION' | 'CRITIQUE';
 

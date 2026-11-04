@@ -22,13 +22,14 @@
   }
 
   <div class="carte-tableau">
-    <p-table [value]="agents()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
+    <app-filtres-tableau [colonnes]="colonnesFiltrables" [table]="dt" />
+    <p-table #dt [value]="agents()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="nom">Nom <p-sortIcon field="nom" /> <p-columnFilter type="text" field="nom" display="menu" /></th>
-          <th pSortableColumn="prenom">Prénom <p-sortIcon field="prenom" /> <p-columnFilter type="text" field="prenom" display="menu" /></th>
-          <th pSortableColumn="email">Email <p-sortIcon field="email" /> <p-columnFilter type="text" field="email" display="menu" /></th>
-          <th pSortableColumn="fonction">Fonction <p-sortIcon field="fonction" /> <p-columnFilter type="text" field="fonction" display="menu" /></th>
+          <th pSortableColumn="nom">Nom <p-sortIcon field="nom" /></th>
+          <th pSortableColumn="prenom">Prénom <p-sortIcon field="prenom" /></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email" /></th>
+          <th pSortableColumn="fonction">Fonction <p-sortIcon field="fonction" /></th>
           <th pSortableColumn="possedeUnCompte">Compte <p-sortIcon field="possedeUnCompte" /></th>
           <th pSortableColumn="actif">Statut <p-sortIcon field="actif" /></th>
           <th></th>

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
@@ -6,11 +6,12 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { UtilisateurService } from '../../../core/services/utilisateur.service';
 import { Utilisateur } from '../../../core/models/utilisateur.model';
+import { FiltresTableauComponent, ColonneFiltrable } from '../../../shared/filtres-tableau/filtres-tableau.component';
 
 @Component({
   selector: 'app-liste-utilisateurs',
   standalone: true,
-  imports: [CommonModule, RouterLink, TableModule, ConfirmPopupModule],
+  imports: [CommonModule, RouterLink, TableModule, ConfirmPopupModule, FiltresTableauComponent],
   templateUrl: './liste-utilisateurs.component.html',
   styleUrl: './liste-utilisateurs.component.scss'
 })
@@ -22,6 +23,24 @@ export class ListeUtilisateursComponent implements OnInit {
   readonly utilisateurs = signal<Utilisateur[]>([]);
   readonly chargement = signal(true);
   readonly erreur = signal<string | null>(null);
+  readonly roleFiltre = signal<Utilisateur['role'] | ''>('');
+  readonly statutFiltre = signal<'ACTIF' | 'INACTIF' | ''>('');
+  readonly rolesDisponibles: Utilisateur['role'][] = ['ADMINISTRATEUR', 'ORGANISATEUR', 'SECRETARIAT', 'AGENT'];
+  readonly utilisateursVisibles = computed(() => {
+    const role = this.roleFiltre();
+    const statut = this.statutFiltre();
+    return this.utilisateurs().filter((utilisateur) =>
+      (!role || utilisateur.role === role)
+      && (!statut || (statut === 'ACTIF' ? utilisateur.actif : !utilisateur.actif))
+    );
+  });
+
+  readonly colonnesFiltrables: ColonneFiltrable[] = [
+    { champ: 'nom', libelle: 'Nom' },
+    { champ: 'prenom', libelle: 'Prénom' },
+    { champ: 'email', libelle: 'Email' },
+    { champ: 'role', libelle: 'Rôle' }
+  ];
 
   ngOnInit(): void {
     this.charger();
@@ -39,6 +58,14 @@ export class ListeUtilisateursComponent implements OnInit {
         this.chargement.set(false);
       }
     });
+  }
+
+  filtrerRole(role: Utilisateur['role'] | ''): void {
+    this.roleFiltre.set(role);
+  }
+
+  filtrerStatut(statut: 'ACTIF' | 'INACTIF' | ''): void {
+    this.statutFiltre.set(statut);
   }
 
   demanderConfirmationActivation(evenement: Event, utilisateur: Utilisateur): void {

@@ -7,7 +7,7 @@ import { MessageService } from 'primeng/api';
 import { RencontreService } from '../../../core/services/rencontre.service';
 import { SalleService } from '../../../core/services/salle.service';
 import { Salle } from '../../../core/models/salle.model';
-import { TypeRencontre } from '../../../core/models/rencontre.model';
+import { TypeRencontre, TYPES_RENCONTRE_SUGGERES } from '../../../core/models/rencontre.model';
 
 @Component({
   selector: 'app-modifier-rencontre',
@@ -25,7 +25,7 @@ export class ModifierRencontreComponent implements OnInit {
   private readonly messageService = inject(MessageService);
 
   rencontreId = 0;
-  readonly typesDisponibles: TypeRencontre[] = ['FORMATION', 'REUNION', 'SEMINAIRE', 'ATELIER'];
+  readonly typesDisponibles = TYPES_RENCONTRE_SUGGERES;
   readonly salles = signal<Salle[]>([]);
   readonly chargement = signal(true);
   readonly enCours = signal(false);

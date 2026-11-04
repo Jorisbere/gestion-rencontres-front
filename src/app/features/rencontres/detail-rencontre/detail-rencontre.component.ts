@@ -16,7 +16,7 @@ import { Rencontre, StatutRencontre } from '../../../core/models/rencontre.model
 import { Inscription, StatutPresence } from '../../../core/models/inscription.model';
 import { Invite } from '../../../core/models/invite.model';
 import { Agent } from '../../../core/models/agent.model';
-import { DocumentRencontre, TypeDocument } from '../../../core/models/document.model';
+import { DocumentRencontre, TypeDocument, TYPES_DOCUMENT_SUGGERES } from '../../../core/models/document.model';
 import { Courrier, CourrierRequest, SensCourrier, StatutCourrier } from '../../../core/models/courrier.model';
 
 const TRANSITIONS_AUTORISEES: Record<StatutRencontre, StatutRencontre[]> = {
@@ -91,9 +91,7 @@ export class DetailRencontreComponent implements OnInit {
   readonly fichierSelectionne = signal<File | null>(null);
   readonly erreurDocument = signal<string | null>(null);
   readonly depotEnCours = signal(false);
-  readonly typesDocumentDisponibles: TypeDocument[] = [
-    'ORDRE_DU_JOUR', 'SUPPORT', 'COMPTE_RENDU', 'CONVOCATION', 'AUTRE'
-  ];
+  readonly typesDocumentDisponibles = TYPES_DOCUMENT_SUGGERES;
 
   readonly courriers = signal<Courrier[]>([]);
   readonly erreurCourrier = signal<string | null>(null);
@@ -192,8 +190,8 @@ export class DetailRencontreComponent implements OnInit {
           detail: `Rencontre : ${LIBELLES_ACTION[nouveauStatut]}`
         });
       },
-      error: () => {
-        this.erreur.set('Impossible de changer le statut.');
+      error: (erreur) => {
+        this.erreur.set(erreur.error?.message ?? 'Impossible de changer le statut.');
         this.enCoursTransition.set(false);
       }
     });
@@ -213,6 +211,14 @@ export class DetailRencontreComponent implements OnInit {
 
   peutGererPresence(): boolean {
     return this.authService.aLeRole('ADMINISTRATEUR', 'SECRETARIAT');
+  }
+
+  peutGererInscriptions(): boolean {
+    return this.authService.aLeRole('ADMINISTRATEUR', 'ORGANISATEUR', 'SECRETARIAT');
+  }
+
+  peutGererDocuments(): boolean {
+    return this.authService.aLeRole('ADMINISTRATEUR', 'ORGANISATEUR', 'SECRETARIAT');
   }
 
   inscrireInvite(): void {
@@ -512,6 +518,22 @@ export class DetailRencontreComponent implements OnInit {
   readonly archiverEtat = signal(false);
   readonly etatEnCours = signal<TypeEtat | null>(null);
   readonly erreurEtat = signal<string | null>(null);
+  readonly ongletActif = signal<'resume' | 'participants' | 'documents' | 'courrier'>('resume');
+  readonly menuEtatsOuvert = signal(false);
+
+  private readonly tousLesOnglets = [
+    { cle: 'resume' as const, libelle: 'Résumé', icone: 'pi-info-circle' },
+    { cle: 'participants' as const, libelle: 'Participants', icone: 'pi-users' },
+    { cle: 'documents' as const, libelle: 'Documents', icone: 'pi-file' },
+    { cle: 'courrier' as const, libelle: 'Courrier', icone: 'pi-envelope' }
+  ];
+
+  ongletsVisibles() {
+    if (this.authService.aLeRole('AGENT')) {
+      return this.tousLesOnglets.filter(({ cle }) => cle === 'resume' || cle === 'documents');
+    }
+    return this.tousLesOnglets;
+  }
 
   readonly etatsDisponibles: { type: TypeEtat; libelle: string; icone: string }[] = [
     { type: 'planning', libelle: 'Planning', icone: 'pi-calendar' },
@@ -523,6 +545,7 @@ export class DetailRencontreComponent implements OnInit {
   telechargerEtat(type: TypeEtat): void {
     this.etatEnCours.set(type);
     this.erreurEtat.set(null);
+    this.menuEtatsOuvert.set(false);
 
     this.etatPeriodiqueService.genererEtat(this.rencontreId, type, this.archiverEtat()).subscribe({
       next: (blob) => {
@@ -542,5 +565,13 @@ export class DetailRencontreComponent implements OnInit {
         this.erreurEtat.set(`Impossible de générer ce document.`);
       }
     });
+  }
+
+  basculerOnglet(onglet: 'resume' | 'participants' | 'documents' | 'courrier'): void {
+    this.ongletActif.set(onglet);
+  }
+
+  basculerMenuEtats(): void {
+    this.menuEtatsOuvert.update((ouvert) => !ouvert);
   }
 }

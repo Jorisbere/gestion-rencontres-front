@@ -1,0 +1,55 @@
+.barre-filtres-utilisateurs {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 16px;
+}
+
+.chip-utilisateur {
+	padding: 7px 12px;
+	border: 1px solid var(--mist);
+	border-radius: 999px;
+	background: var(--surface);
+	color: var(--ink-soft);
+	cursor: pointer;
+	font-size: 12px;
+
+	&.actif {
+		border-color: var(--ocean);
+		background: var(--info-bg);
+		color: var(--ink);
+	}
+}
+
+.separateur-filtres {
+	width: 1px;
+	height: 22px;
+	margin: 0 4px;
+	background: var(--mist);
+}
+
+.actions-ligne {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+	.separateur-filtres {
+		display: none;
+	}
+
+	:host ::ng-deep {
+		.p-datatable-thead > tr > th:nth-child(2),
+		.p-datatable-tbody > tr > td:nth-child(2),
+		.p-datatable-thead > tr > th:nth-child(3),
+		.p-datatable-tbody > tr > td:nth-child(3) {
+			display: none;
+		}
+	}
+
+	.libelle-action {
+		display: none;
+	}
+}

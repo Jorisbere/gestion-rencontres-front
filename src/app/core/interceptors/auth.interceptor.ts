@@ -15,8 +15,11 @@ export const authInterceptor: HttpInterceptorFn = (requete, suite) => {
 
   return suite(requeteAvecToken).pipe(
     catchError((erreur) => {
-      if (erreur.status === 401 || erreur.status === 403) {
-        // Token invalide/expiré ou compte désactivé (RG-EF9-06) : retour à la connexion
+      // Uniquement 401 : token invalide/expiré, la session elle-même n'est plus valide.
+      // Un 403 signifie une session valide mais une action refusée sur CETTE ressource
+      // précise (ex. modifier la rencontre d'un autre organisateur, RG-EF9-06 compte
+      // désactivé) — l'utilisateur reste connecté, l'écran affiche l'erreur normalement.
+      if (erreur.status === 401) {
         authService.deconnecter();
         router.navigate(['/connexion']);
       }

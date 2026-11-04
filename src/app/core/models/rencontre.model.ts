@@ -1,4 +1,9 @@
-export type TypeRencontre = 'FORMATION' | 'REUNION' | 'SEMINAIRE' | 'ATELIER';
+/**
+ * Texte libre côté back (V7) : ces 4 valeurs restent proposées comme suggestions dans les
+ * formulaires, mais n'importe quel autre type peut être saisi.
+ */
+export type TypeRencontre = string;
+export const TYPES_RENCONTRE_SUGGERES: readonly string[] = ['FORMATION', 'REUNION', 'SEMINAIRE', 'ATELIER'];
 
 export type StatutRencontre = 'PLANIFIEE' | 'CONFIRMEE' | 'EN_COURS' | 'TERMINEE' | 'ANNULEE';
 

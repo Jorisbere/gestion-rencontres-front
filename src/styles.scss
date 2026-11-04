@@ -220,6 +220,30 @@ a {
   &:hover i { transform: translateX(2px); }
 }
 
+// Lien "← Retour" — distinct de .lien-discret (dont la flèche avance au survol, l'inverse
+// de ce qu'on veut ici) : pastille discrète, flèche qui recule, position en amont du titre.
+.lien-retour {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 6px 12px 6px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  i { font-size: 11px; transition: transform 0.15s ease; }
+
+  &:hover {
+    background-color: var(--paper);
+    color: var(--ocean);
+  }
+  &:hover i { transform: translateX(-2px); }
+}
+
 .actions-ligne {
   display: flex;
   align-items: center;

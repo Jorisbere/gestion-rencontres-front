@@ -51,6 +51,9 @@ export class MesAlertesComponent implements OnInit {
     switch (alerte.type as TypeAlerte) {
       case 'CONFLIT_SALLE': return 'pi-exclamation-triangle';
       case 'RENCONTRE_PROCHE': return 'pi-clock';
+      case 'RENCONTRE_PLANIFIEE': return 'pi-calendar-plus';
+      case 'RENCONTRE_ANNULEE': return 'pi-calendar-times';
+      case 'RENCONTRE_MODIFIEE': return 'pi-pencil';
       case 'COURRIER_RETARD': return 'pi-envelope';
     }
   }

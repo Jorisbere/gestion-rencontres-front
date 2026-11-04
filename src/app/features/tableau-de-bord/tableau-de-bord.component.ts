@@ -25,6 +25,7 @@ export class TableauDeBordComponent implements OnInit {
   readonly chargement = signal(true);
   readonly prochainesRencontres = signal<Rencontre[]>([]);
   readonly alertesRecentes = signal<Alerte[]>([]);
+  readonly rencontresTotal = signal(0);
   readonly rencontresCetteSemaine = signal(0);
   readonly alertesNonTraitees = signal(0);
   readonly rencontresConfirmees = signal(0);
@@ -45,6 +46,7 @@ export class TableauDeBordComponent implements OnInit {
             .sort((a, b) => new Date(a.dateDebut).getTime() - new Date(b.dateDebut).getTime());
 
           this.prochainesRencontres.set(aVenir.slice(0, 5));
+          this.rencontresTotal.set(rencontres.filter((r) => r.statut !== 'ANNULEE').length);
           this.rencontresCetteSemaine.set(
             aVenir.filter((r) => new Date(r.dateDebut) <= dansUneSemaine).length
           );

@@ -1,0 +1,41 @@
+.barre-filtres-alertes {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 16px;
+}
+
+.chip-alerte {
+	display: inline-flex;
+	align-items: center;
+	min-height: 36px;
+	padding: 4px 10px;
+	border: 1px solid var(--mist);
+	border-radius: 999px;
+	background: var(--surface);
+	color: var(--ink-soft);
+	cursor: pointer;
+
+	&.actif {
+		border-color: var(--ocean);
+		background: var(--info-bg);
+		color: var(--ink);
+	}
+}
+
+.action-traiter {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+@media (max-width: 640px) {
+	:host ::ng-deep {
+		.p-datatable-thead > tr > th:nth-child(3),
+		.p-datatable-tbody > tr > td:nth-child(3),
+		.p-datatable-thead > tr > th:nth-child(5),
+		.p-datatable-tbody > tr > td:nth-child(5) {
+			display: none;
+		}
+	}
+}

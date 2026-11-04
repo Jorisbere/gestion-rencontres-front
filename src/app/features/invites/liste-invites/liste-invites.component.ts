@@ -7,11 +7,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { InviteService } from '../../../core/services/invite.service';
 import { Invite } from '../../../core/models/invite.model';
 import { exporterCsv } from '../../../core/utils/csv.util';
+import { FiltresTableauComponent, ColonneFiltrable } from '../../../shared/filtres-tableau/filtres-tableau.component';
 
 @Component({
   selector: 'app-liste-invites',
   standalone: true,
-  imports: [CommonModule, RouterLink, TableModule, ConfirmPopupModule],
+  imports: [CommonModule, RouterLink, TableModule, ConfirmPopupModule, FiltresTableauComponent],
   templateUrl: './liste-invites.component.html',
   styleUrl: './liste-invites.component.scss'
 })
@@ -23,6 +24,11 @@ export class ListeInvitesComponent implements OnInit {
   readonly invites = signal<Invite[]>([]);
   readonly chargement = signal(true);
   readonly erreur = signal<string | null>(null);
+
+  readonly colonnesFiltrables: ColonneFiltrable[] = [
+    { champ: 'libelle', libelle: 'Nom / Structure' },
+    { champ: 'email', libelle: 'Email' }
+  ];
 
   ngOnInit(): void {
     this.charger();

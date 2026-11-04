@@ -26,17 +26,18 @@
   }
 
   <div class="carte-tableau">
-    <p-table [value]="rencontres()" [loading]="chargement()" [paginator]="true" [rows]="10"
+    <app-filtres-tableau [colonnes]="colonnesFiltrables" [table]="dt" />
+    <p-table #dt [value]="rencontres()" [loading]="chargement()" [paginator]="true" [rows]="10"
              styleClass="tableau-rencontres" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="titre">Titre <p-sortIcon field="titre" /> <p-columnFilter type="text" field="titre" display="menu" /></th>
-          <th pSortableColumn="typeRencontre">Type <p-sortIcon field="typeRencontre" /> <p-columnFilter type="text" field="typeRencontre" display="menu" /></th>
-          <th pSortableColumn="statut">Statut <p-sortIcon field="statut" /> <p-columnFilter type="text" field="statut" display="menu" /></th>
-          <th pSortableColumn="salleNom">Salle <p-sortIcon field="salleNom" /> <p-columnFilter type="text" field="salleNom" display="menu" /></th>
+          <th pSortableColumn="titre">Titre <p-sortIcon field="titre" /></th>
+          <th pSortableColumn="typeRencontre">Type <p-sortIcon field="typeRencontre" /></th>
+          <th pSortableColumn="statut">Statut <p-sortIcon field="statut" /></th>
+          <th pSortableColumn="salleNom">Salle <p-sortIcon field="salleNom" /></th>
           <th pSortableColumn="dateDebut">Début <p-sortIcon field="dateDebut" /></th>
           <th pSortableColumn="dateFin">Fin <p-sortIcon field="dateFin" /></th>
-          <th pSortableColumn="organisateurNomComplet">Organisateur <p-sortIcon field="organisateurNomComplet" /> <p-columnFilter type="text" field="organisateurNomComplet" display="menu" /></th>
+          <th pSortableColumn="organisateurNomComplet">Organisateur <p-sortIcon field="organisateurNomComplet" /></th>
           <th></th>
         </tr>
       </ng-template>

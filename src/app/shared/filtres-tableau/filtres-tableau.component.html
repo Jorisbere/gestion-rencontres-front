@@ -1,0 +1,46 @@
+<div class="barre-filtres-tableau">
+  @for (filtre of filtresActifs(); track filtre.champ) {
+    <span class="chip-filtre">
+      {{ filtre.libelle }} : {{ filtre.valeur }}
+      <button type="button" (click)="retirer(filtre)" [attr.aria-label]="'Retirer le filtre ' + filtre.libelle">
+        <i class="pi pi-times"></i>
+      </button>
+    </span>
+  }
+
+  @if (!formulaireOuvert()) {
+    @if (colonnesDisponibles().length > 0) {
+      <button type="button" class="chip-ajouter" (click)="ouvrirFormulaire()">
+        <i class="pi pi-plus"></i>
+        Filtrer
+      </button>
+    }
+  } @else {
+    <div class="formulaire-filtre">
+      <select [ngModel]="champChoisi()" (ngModelChange)="champChoisi.set($event)">
+        @for (colonne of colonnesDisponibles(); track colonne.champ) {
+          <option [value]="colonne.champ">{{ colonne.libelle }}</option>
+        }
+      </select>
+      <input
+        type="text"
+        placeholder="Valeur…"
+        [ngModel]="valeurSaisie()"
+        (ngModelChange)="valeurSaisie.set($event)"
+        (keydown.enter)="appliquer()"
+        (keydown.escape)="annuler()"
+        #champValeur
+      />
+      <button type="button" class="bouton-appliquer" (click)="appliquer()" aria-label="Appliquer le filtre">
+        <i class="pi pi-check"></i>
+      </button>
+      <button type="button" class="bouton-annuler" (click)="annuler()" aria-label="Annuler">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  }
+
+  @if (filtresActifs().length > 0) {
+    <button type="button" class="lien-effacer-tout" (click)="toutEffacer()">Effacer les filtres</button>
+  }
+</div>

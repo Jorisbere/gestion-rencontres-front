@@ -6,45 +6,57 @@
     </div>
   </div>
 
-  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte">
-    <label for="titre">Titre</label>
-    <input id="titre" type="text" formControlName="titre" placeholder="Réunion budget 2026" />
+  <form [formGroup]="formulaire" (ngSubmit)="soumettre()" class="carte formulaire-rencontre">
+    <section class="bloc-formulaire">
+      <div class="titre-bloc-formulaire">
+        <i class="pi pi-file-edit"></i>
+        <div><h2>Informations principales</h2><p>Identifiez la rencontre et son responsable.</p></div>
+      </div>
+      <div class="grille-formulaire">
+        <div class="champ-formulaire champ-large">
+          <label for="titre">Titre <span class="obligatoire">*</span></label>
+          <input id="titre" type="text" formControlName="titre" placeholder="Réunion budget 2026" [class.champ-invalide]="formulaire.controls.titre.touched && formulaire.controls.titre.invalid" />
+          @if (formulaire.controls.titre.touched && formulaire.controls.titre.hasError('required')) { <small class="erreur-champ">Le titre est obligatoire.</small> }
+        </div>
+        <div class="champ-formulaire">
+          <label for="typeRencontre">Type <span class="obligatoire">*</span></label>
+          <input id="typeRencontre" type="text" list="types-rencontre-suggeres" formControlName="typeRencontre" placeholder="Réunion, Formation..." [class.champ-invalide]="formulaire.controls.typeRencontre.touched && formulaire.controls.typeRencontre.invalid" />
+          <datalist id="types-rencontre-suggeres">
+            @for (type of typesDisponibles; track type) { <option [value]="type"></option> }
+          </datalist>
+          @if (formulaire.controls.typeRencontre.touched && formulaire.controls.typeRencontre.hasError('required')) { <small class="erreur-champ">Le type est obligatoire.</small> }
+        </div>
+        <div class="champ-formulaire">
+          <label for="salleId">Salle <span class="obligatoire">*</span></label>
+          <select id="salleId" formControlName="salleId" [class.champ-invalide]="formulaire.controls.salleId.touched && formulaire.controls.salleId.invalid">
+            <option value="" disabled>Sélectionner une salle</option>
+            @for (salle of salles(); track salle.id) { <option [value]="salle.id">{{ salle.nom }} ({{ salle.capacite }} places)</option> }
+          </select>
+          @if (formulaire.controls.salleId.touched && formulaire.controls.salleId.hasError('required')) { <small class="erreur-champ">Sélectionnez une salle.</small> }
+        </div>
+        <div class="champ-formulaire">
+          <label for="initiateurId">Initiateur</label>
+          <select id="initiateurId" formControlName="initiateurId">
+            <option value="">Toi-même (par défaut)</option>
+            @for (agent of agents(); track agent.id) { <option [value]="agent.id">{{ agent.prenom }} {{ agent.nom }}</option> }
+          </select>
+        </div>
+      </div>
+    </section>
 
-    <label for="typeRencontre">Type</label>
-    <select id="typeRencontre" formControlName="typeRencontre">
-      <option value="" disabled>Sélectionner un type</option>
-      @for (type of typesDisponibles; track type) {
-        <option [value]="type">{{ type }}</option>
-      }
-    </select>
+    <section class="bloc-formulaire">
+      <div class="titre-bloc-formulaire"><i class="pi pi-calendar"></i><div><h2>Date et capacité</h2><p>Définissez le créneau et le nombre de participants attendus.</p></div></div>
+      <div class="grille-formulaire grille-dates">
+        <div class="champ-formulaire"><label for="dateDebut">Début <span class="obligatoire">*</span></label><input id="dateDebut" type="datetime-local" formControlName="dateDebut" [class.champ-invalide]="formulaire.controls.dateDebut.touched && formulaire.controls.dateDebut.invalid" />@if (formulaire.controls.dateDebut.touched && formulaire.controls.dateDebut.hasError('required')) { <small class="erreur-champ">La date de début est obligatoire.</small> }</div>
+        <div class="champ-formulaire"><label for="dateFin">Fin <span class="obligatoire">*</span></label><input id="dateFin" type="datetime-local" formControlName="dateFin" [class.champ-invalide]="formulaire.controls.dateFin.touched && formulaire.controls.dateFin.invalid" />@if (formulaire.controls.dateFin.touched && formulaire.controls.dateFin.hasError('required')) { <small class="erreur-champ">La date de fin est obligatoire.</small> }</div>
+        <div class="champ-formulaire"><label for="capacitePrevue">Capacité prévue <span class="obligatoire">*</span></label><input id="capacitePrevue" type="number" min="1" formControlName="capacitePrevue" placeholder="Participants attendus" [class.champ-invalide]="formulaire.controls.capacitePrevue.touched && formulaire.controls.capacitePrevue.invalid" />@if (formulaire.controls.capacitePrevue.touched && formulaire.controls.capacitePrevue.invalid) { <small class="erreur-champ">Indiquez une capacité d’au moins 1.</small> }</div>
+      </div>
+    </section>
 
-    <label for="salleId">Salle</label>
-    <select id="salleId" formControlName="salleId">
-      <option value="" disabled>Sélectionner une salle</option>
-      @for (salle of salles(); track salle.id) {
-        <option [value]="salle.id">{{ salle.nom }} ({{ salle.capacite }} places)</option>
-      }
-    </select>
-
-    <label for="capacitePrevue">Capacité prévue</label>
-    <input id="capacitePrevue" type="number" min="1" formControlName="capacitePrevue" placeholder="Nombre de participants attendus" />
-
-    <label for="dateDebut">Date et heure de début</label>
-    <input id="dateDebut" type="datetime-local" formControlName="dateDebut" />
-
-    <label for="dateFin">Date et heure de fin</label>
-    <input id="dateFin" type="datetime-local" formControlName="dateFin" />
-
-    <label for="initiateurId">Initiateur (si différent de toi)</label>
-    <select id="initiateurId" formControlName="initiateurId">
-      <option value="">Toi-même (par défaut)</option>
-      @for (agent of agents(); track agent.id) {
-        <option [value]="agent.id">{{ agent.prenom }} {{ agent.nom }}</option>
-      }
-    </select>
-
-    <label for="description">Description</label>
-    <textarea id="description" formControlName="description" rows="3"></textarea>
+    <section class="bloc-formulaire">
+      <div class="titre-bloc-formulaire"><i class="pi pi-align-left"></i><div><h2>Description</h2><p>Ajoutez les informations utiles aux participants.</p></div></div>
+      <div class="champ-formulaire"><label for="description">Description <span>(facultatif)</span></label><textarea id="description" formControlName="description" rows="4"></textarea></div>
+    </section>
 
     @if (messageErreur()) {
       <p class="message-erreur">{{ messageErreur() }}</p>

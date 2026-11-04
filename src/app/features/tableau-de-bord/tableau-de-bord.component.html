@@ -1,10 +1,23 @@
 <div class="page">
   @if (authService.utilisateurConnecte(); as utilisateur) {
-    <p class="eyebrow">{{ saluation() }}</p>
-    <h1>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+    <div class="intro-tableau">
+      <div>
+        <p class="eyebrow">{{ saluation() }}</p>
+        <h1>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+      </div>
+      @if (!authService.aLeRole('AGENT')) {
+        <a routerLink="/rencontres/planifier" class="bouton-principal bouton-action">
+          <i class="pi pi-plus"></i> Planifier une rencontre
+        </a>
+      }
+    </div>
   }
 
   <div class="grille-indicateurs-kpi">
+      <a routerLink="/rencontres" class="carte-kpi kpi-lien">
+        <span class="valeur-kpi">{{ rencontresTotal() }}</span>
+        <span class="libelle-kpi">Rencontres actives</span>
+      </a>
     <div class="carte-kpi">
       <span class="valeur-kpi">{{ rencontresCetteSemaine() }}</span>
       <span class="libelle-kpi">Rencontres dans les 7 prochains jours</span>
@@ -17,6 +30,12 @@
       <span class="valeur-kpi">{{ rencontresConfirmees() }}</span>
       <span class="libelle-kpi">Rencontres confirmées</span>
     </div>
+  </div>
+
+  <div class="raccourcis-tableau">
+    <a routerLink="/rencontres" class="raccourci-tableau"><i class="pi pi-calendar"></i><span>Voir les rencontres</span><i class="pi pi-arrow-right"></i></a>
+    <a routerLink="/mes-inscriptions" class="raccourci-tableau"><i class="pi pi-calendar-plus"></i><span>Mes inscriptions</span><i class="pi pi-arrow-right"></i></a>
+    <a routerLink="/mes-documents" class="raccourci-tableau"><i class="pi pi-file"></i><span>Mes documents</span><i class="pi pi-arrow-right"></i></a>
   </div>
 
   <div class="grille-deux-blocs">

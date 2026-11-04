@@ -9,7 +9,7 @@ import { SalleService } from '../../../core/services/salle.service';
 import { AgentService } from '../../../core/services/agent.service';
 import { Salle } from '../../../core/models/salle.model';
 import { Agent } from '../../../core/models/agent.model';
-import { RencontreRequest, TypeRencontre } from '../../../core/models/rencontre.model';
+import { RencontreRequest, TypeRencontre, TYPES_RENCONTRE_SUGGERES } from '../../../core/models/rencontre.model';
 
 @Component({
   selector: 'app-planifier-rencontre',
@@ -26,7 +26,7 @@ export class PlanifierRencontreComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
 
-  readonly typesDisponibles: TypeRencontre[] = ['FORMATION', 'REUNION', 'SEMINAIRE', 'ATELIER'];
+  readonly typesDisponibles = TYPES_RENCONTRE_SUGGERES;
   readonly salles = signal<Salle[]>([]);
   readonly agents = signal<Agent[]>([]);
   readonly enCours = signal(false);

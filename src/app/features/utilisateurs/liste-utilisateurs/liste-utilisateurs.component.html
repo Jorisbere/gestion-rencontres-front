@@ -11,18 +11,30 @@
     </a>
   </div>
 
+  <div class="barre-filtres-utilisateurs">
+    <button type="button" class="chip-utilisateur" [class.actif]="statutFiltre() === ''" (click)="filtrerStatut('')">Tous les comptes</button>
+    <button type="button" class="chip-utilisateur" [class.actif]="statutFiltre() === 'ACTIF'" (click)="filtrerStatut('ACTIF')">Actifs</button>
+    <button type="button" class="chip-utilisateur" [class.actif]="statutFiltre() === 'INACTIF'" (click)="filtrerStatut('INACTIF')">Inactifs</button>
+    <span class="separateur-filtres"></span>
+    <button type="button" class="chip-utilisateur" [class.actif]="roleFiltre() === ''" (click)="filtrerRole('')">Tous les rôles</button>
+    @for (role of rolesDisponibles; track role) {
+      <button type="button" class="chip-utilisateur" [class.actif]="roleFiltre() === role" (click)="filtrerRole(role)">{{ role }}</button>
+    }
+  </div>
+
   @if (erreur()) {
     <p class="message-erreur">{{ erreur() }}</p>
   }
 
   <div class="carte-tableau">
-    <p-table [value]="utilisateurs()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
+    <app-filtres-tableau [colonnes]="colonnesFiltrables" [table]="dt" />
+    <p-table #dt [value]="utilisateursVisibles()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="nom">Nom <p-sortIcon field="nom" /> <p-columnFilter type="text" field="nom" display="menu" /></th>
-          <th pSortableColumn="prenom">Prénom <p-sortIcon field="prenom" /> <p-columnFilter type="text" field="prenom" display="menu" /></th>
-          <th pSortableColumn="email">Email <p-sortIcon field="email" /> <p-columnFilter type="text" field="email" display="menu" /></th>
-          <th pSortableColumn="role">Rôle <p-sortIcon field="role" /> <p-columnFilter type="text" field="role" display="menu" /></th>
+          <th pSortableColumn="nom">Nom <p-sortIcon field="nom" /></th>
+          <th pSortableColumn="prenom">Prénom <p-sortIcon field="prenom" /></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email" /></th>
+          <th pSortableColumn="role">Rôle <p-sortIcon field="role" /></th>
           <th pSortableColumn="actif">Statut <p-sortIcon field="actif" /></th>
           <th></th>
         </tr>
@@ -41,10 +53,11 @@
             </span>
           </td>
           <td class="actions-ligne">
-            <button class="bouton-mini" (click)="demanderConfirmationActivation($event, utilisateur)">
-              {{ utilisateur.actif ? 'Désactiver' : 'Activer' }}
+            <button class="bouton-mini" (click)="demanderConfirmationActivation($event, utilisateur)" [attr.aria-label]="utilisateur.actif ? 'Désactiver le compte' : 'Activer le compte'">
+              <i class="pi" [ngClass]="utilisateur.actif ? 'pi-ban' : 'pi-check'"></i>
+              <span class="libelle-action">{{ utilisateur.actif ? 'Désactiver' : 'Activer' }}</span>
             </button>
-            <a [routerLink]="['/utilisateurs', utilisateur.id, 'modifier']" class="bouton-mini">Modifier</a>
+            <a [routerLink]="['/utilisateurs', utilisateur.id, 'modifier']" class="bouton-mini" aria-label="Modifier le compte"><i class="pi pi-pencil"></i><span class="libelle-action">Modifier</span></a>
           </td>
         </tr>
       </ng-template>

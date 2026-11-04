@@ -302,6 +302,11 @@ export class AppShellComponent implements OnInit {
     }
   }
 
+  allerVersToutesLesAlertes(): void {
+    this.apercuAlertesOuvert.set(false);
+    this.router.navigateByUrl('/alertes');
+  }
+
   classeNiveauAlerte(niveau: NiveauAlerte): string {
     switch (niveau) {
       case 'INFO': return 'pastille-info';

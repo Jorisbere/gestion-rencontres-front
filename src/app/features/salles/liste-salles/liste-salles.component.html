@@ -18,12 +18,13 @@
   }
 
   <div class="carte-tableau">
-    <p-table [value]="salles()" [loading]="chargement()" [rowHover]="true">
+    <app-filtres-tableau [colonnes]="colonnesFiltrables" [table]="dt" />
+    <p-table #dt [value]="salles()" [loading]="chargement()" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="nom">Nom <p-sortIcon field="nom" /> <p-columnFilter type="text" field="nom" display="menu" /></th>
+          <th pSortableColumn="nom">Nom <p-sortIcon field="nom" /></th>
           <th pSortableColumn="capacite">Capacité <p-sortIcon field="capacite" /></th>
-          <th pSortableColumn="localisation">Localisation <p-sortIcon field="localisation" /> <p-columnFilter type="text" field="localisation" display="menu" /></th>
+          <th pSortableColumn="localisation">Localisation <p-sortIcon field="localisation" /></th>
           <th pSortableColumn="actif">Statut <p-sortIcon field="actif" /></th>
           @if (authService.aLeRole('ADMINISTRATEUR')) {
             <th></th>

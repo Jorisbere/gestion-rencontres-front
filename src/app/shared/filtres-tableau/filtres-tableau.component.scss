@@ -1,0 +1,128 @@
+.barre-filtres-tableau {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: var(--paper);
+  border-bottom: 1px solid var(--mist);
+}
+
+.chip-filtre {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 6px 0 12px;
+  border-radius: 20px;
+  background-color: var(--surface);
+  border: 1px solid var(--mist);
+  font-size: 12.5px;
+  color: var(--ink);
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 10px;
+
+    &:hover {
+      background-color: var(--neutral-bg);
+      color: var(--danger);
+    }
+  }
+}
+
+.chip-ajouter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 20px;
+  background-color: var(--surface);
+  border: 1px dashed var(--ink-soft);
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  cursor: pointer;
+
+  i { font-size: 11px; }
+
+  &:hover {
+    border-color: var(--ocean);
+    color: var(--ocean);
+  }
+}
+
+.formulaire-filtre {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  select,
+  input {
+    height: 28px;
+    padding: 0 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--mist);
+    background-color: var(--surface);
+    font-size: 12.5px;
+    font-family: var(--font-corps);
+    color: var(--ink);
+
+    &:focus {
+      outline: none;
+      border-color: var(--ocean);
+    }
+  }
+
+  input {
+    width: 140px;
+  }
+}
+
+.bouton-appliquer,
+.bouton-annuler {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.bouton-appliquer {
+  background-color: var(--gold);
+  color: var(--navy);
+
+  &:hover { background-color: var(--gold-light); }
+}
+
+.bouton-annuler {
+  background: none;
+  color: var(--ink-soft);
+
+  &:hover { background-color: var(--neutral-bg); }
+}
+
+.lien-effacer-tout {
+  margin-left: auto;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover { color: var(--danger); }
+}

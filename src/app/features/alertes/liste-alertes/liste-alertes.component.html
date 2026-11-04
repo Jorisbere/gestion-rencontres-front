@@ -10,18 +10,28 @@
     </button>
   </div>
 
+  <div class="barre-filtres-alertes">
+    <button type="button" class="chip-alerte" [class.actif]="niveauFiltre() === ''" (click)="filtrerParNiveau('')">Toutes</button>
+    @for (niveau of niveauxDisponibles; track niveau) {
+      <button type="button" class="chip-alerte" [class.actif]="niveauFiltre() === niveau" (click)="filtrerParNiveau(niveau)">
+        <span class="pastille" [ngClass]="classeNiveau(niveau)">{{ niveau }}</span>
+      </button>
+    }
+  </div>
+
   @if (erreur()) {
     <p class="message-erreur">{{ erreur() }}</p>
   }
 
   <div class="carte-tableau">
-    <p-table [value]="alertes()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
+    <app-filtres-tableau [colonnes]="colonnesFiltrables" [table]="dt" />
+    <p-table #dt [value]="alertesVisibles()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="type">Type <p-sortIcon field="type" /> <p-columnFilter type="text" field="type" display="menu" /></th>
-          <th pSortableColumn="niveau">Niveau <p-sortIcon field="niveau" /> <p-columnFilter type="text" field="niveau" display="menu" /></th>
+          <th pSortableColumn="type">Type <p-sortIcon field="type" /></th>
+          <th pSortableColumn="niveau">Niveau <p-sortIcon field="niveau" /></th>
           <th>Concerne</th>
-          <th pSortableColumn="message">Message <p-sortIcon field="message" /> <p-columnFilter type="text" field="message" display="menu" /></th>
+          <th pSortableColumn="message">Message <p-sortIcon field="message" /></th>
           <th pSortableColumn="dateCreation">Créée le <p-sortIcon field="dateCreation" /></th>
           <th></th>
         </tr>
@@ -41,7 +51,7 @@
           <td>{{ alerte.dateCreation | date: 'dd/MM/yy HH:mm' }}</td>
           <td>
             @if (!alerte.traitee) {
-              <button class="bouton-mini" (click)="traiter(alerte)">Marquer traitée</button>
+              <button class="bouton-mini action-traiter" (click)="traiter(alerte)"><i class="pi pi-check"></i> Traiter</button>
             } @else {
               <span class="pastille pastille-neutre">Traitée</span>
             }

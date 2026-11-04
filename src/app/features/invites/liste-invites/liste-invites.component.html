@@ -22,12 +22,13 @@
   }
 
   <div class="carte-tableau">
-    <p-table [value]="invites()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
+    <app-filtres-tableau [colonnes]="colonnesFiltrables" [table]="dt" />
+    <p-table #dt [value]="invites()" [loading]="chargement()" [paginator]="true" [rows]="10" [rowHover]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="libelle">Nom / Structure <p-sortIcon field="libelle" /> <p-columnFilter type="text" field="libelle" display="menu" /></th>
+          <th pSortableColumn="libelle">Nom / Structure <p-sortIcon field="libelle" /></th>
           <th pSortableColumn="typeParticipant">Type <p-sortIcon field="typeParticipant" /></th>
-          <th pSortableColumn="email">Email <p-sortIcon field="email" /> <p-columnFilter type="text" field="email" display="menu" /></th>
+          <th pSortableColumn="email">Email <p-sortIcon field="email" /></th>
           <th>Organisation</th>
           <th pSortableColumn="contact">Contact <p-sortIcon field="contact" /></th>
           <th pSortableColumn="actif">Statut <p-sortIcon field="actif" /></th>

@@ -7,11 +7,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { SalleService } from '../../../core/services/salle.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Salle } from '../../../core/models/salle.model';
+import { FiltresTableauComponent, ColonneFiltrable } from '../../../shared/filtres-tableau/filtres-tableau.component';
 
 @Component({
   selector: 'app-liste-salles',
   standalone: true,
-  imports: [CommonModule, RouterLink, TableModule, ConfirmPopupModule],
+  imports: [CommonModule, RouterLink, TableModule, ConfirmPopupModule, FiltresTableauComponent],
   templateUrl: './liste-salles.component.html',
   styleUrl: './liste-salles.component.scss'
 })
@@ -24,6 +25,11 @@ export class ListeSallesComponent implements OnInit {
   readonly salles = signal<Salle[]>([]);
   readonly chargement = signal(true);
   readonly erreur = signal<string | null>(null);
+
+  readonly colonnesFiltrables: ColonneFiltrable[] = [
+    { champ: 'nom', libelle: 'Nom' },
+    { champ: 'localisation', libelle: 'Localisation' }
+  ];
 
   ngOnInit(): void {
     this.charger();

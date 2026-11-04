@@ -7,11 +7,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { AgentService } from '../../../core/services/agent.service';
 import { Agent } from '../../../core/models/agent.model';
 import { exporterCsv } from '../../../core/utils/csv.util';
+import { FiltresTableauComponent, ColonneFiltrable } from '../../../shared/filtres-tableau/filtres-tableau.component';
 
 @Component({
   selector: 'app-liste-agents',
   standalone: true,
-  imports: [CommonModule, RouterLink, TableModule, ConfirmPopupModule],
+  imports: [CommonModule, RouterLink, TableModule, ConfirmPopupModule, FiltresTableauComponent],
   templateUrl: './liste-agents.component.html',
   styleUrl: './liste-agents.component.scss'
 })
@@ -23,6 +24,13 @@ export class ListeAgentsComponent implements OnInit {
   readonly agents = signal<Agent[]>([]);
   readonly chargement = signal(true);
   readonly erreur = signal<string | null>(null);
+
+  readonly colonnesFiltrables: ColonneFiltrable[] = [
+    { champ: 'nom', libelle: 'Nom' },
+    { champ: 'prenom', libelle: 'Prénom' },
+    { champ: 'email', libelle: 'Email' },
+    { champ: 'fonction', libelle: 'Fonction' }
+  ];
 
   ngOnInit(): void {
     this.charger();
